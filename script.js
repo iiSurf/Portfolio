@@ -374,8 +374,9 @@
       hem: '#dcc2ff', legs: '#eabd9d', brief: '#6c3fc8', acc: '#f3c34e', glow: '196,160,255' },
     { cut: 'jacket', hair: 'pony', skin: '#e6b08b', hairC: '#e8b85e', top: '#d8364b', sleeve: '#d8364b', legs: '#2b2458',
       brief: '#2b2458', trim: '#fff2e2', acc: '#fff2e2', glow: '255,128,138' },
-    { cut: 'top', hair: 'short', skin: '#a9714f', hairC: '#1d1525', top: '#159fb0', sleeve: '#159fb0', legs: '#25347a',
-      brief: '#25347a', trim: '#dfe7f4', acc: '#dfe7f4', glow: '110,228,255' },
+    // the man: black boots, black trousers, short hair and broader shoulders (sw)
+    { cut: 'jacket', hair: 'short', skin: '#a9714f', hairC: '#1d1525', top: '#159fb0', sleeve: '#159fb0', legs: '#15172b',
+      brief: '#15172b', trim: '#dfe7f4', acc: '#dfe7f4', glow: '110,228,255', boot: '#14111a', bootEdge: '#4b4660', sole: '#2b2736', sw: 1.1 },
     { cut: 'dress', hair: 'pony', skin: '#f6d8c2', hairC: '#9e3b25', top: '#ef8a2e', sleeve: '#ffd29e', skirt: '#f39a35',
       hem: '#ffe08a', legs: '#efc8ac', brief: '#ef8a2e', acc: '#ffe08a', glow: '255,196,112' },
     { cut: 'dress', hair: 'bun', skin: '#7d4c35', hairC: '#1c1320', top: '#f5f1ff', sleeve: '#cdc6ec', skirt: '#ffffff',
@@ -595,8 +596,8 @@
         if (!refl) o.knee = el('circle', { r: 2.3 }, g);   // joint discs are skipped in the faint reflection
         o.shin = el('path', { d: SHIN_D }, g);
         o.boot = el('g', null, g);
-        o.bootB = el('path', { d: BOOT_D, fill: BOOT, stroke: BOOT_EDGE, 'stroke-width': 0.45, 'stroke-linejoin': 'round' }, o.boot);
-        el('path', { d: SOLE_D, fill: SOLE }, o.boot);
+        o.bootB = el('path', { d: BOOT_D, fill: look.boot || BOOT, stroke: look.bootEdge || BOOT_EDGE, 'stroke-width': 0.45, 'stroke-linejoin': 'round' }, o.boot);
+        el('path', { d: SOLE_D, fill: look.sole || SOLE }, o.boot);
         o.blade = el('path', { d: BLADE_D, fill: BLADE }, o.boot);
         return o;
       }
@@ -676,7 +677,7 @@
       if (which === 'legL' || which === 'legR') {
         var c = far ? shade(look.legs, 0.2) : look.legs;
         o.thigh.setAttribute('fill', c); if (o.knee) o.knee.setAttribute('fill', c); o.shin.setAttribute('fill', c);
-        o.bootB.setAttribute('fill', far ? BOOT_FAR : BOOT); o.blade.setAttribute('fill', far ? BLADE_FAR : BLADE);
+        o.bootB.setAttribute('fill', look.boot ? (far ? shade(look.boot, 0.2) : look.boot) : (far ? BOOT_FAR : BOOT)); o.blade.setAttribute('fill', far ? BLADE_FAR : BLADE);
       } else {
         var s = far ? shade(look.sleeve, 0.2) : look.sleeve, k = far ? shade(look.skin, 0.18) : look.skin;
         if (o.sh) { o.sh.setAttribute('fill', s); o.elb.setAttribute('fill', s); }
@@ -1489,7 +1490,8 @@
       up[0] = t0; up[1] = t1; up[2] = t2;
       var top = J.top;
       for (i = 0; i < 3; i++) top[i] = pel[i] + up[i] * SPINE;
-      for (i = 0; i < 3; i++) { J.shL[i] = top[i] + up[i] * SHDY + lf[i] * SHW; J.shR[i] = top[i] + up[i] * SHDY - lf[i] * SHW; }
+      var shw = SHW * (sk.look.sw || 1);
+      for (i = 0; i < 3; i++) { J.shL[i] = top[i] + up[i] * SHDY + lf[i] * shw; J.shR[i] = top[i] + up[i] * SHDY - lf[i] * shw; }
       // head
       c = Math.cos(P[K.hp]); s = Math.sin(P[K.hp]);
       var uh = J.upH; for (i = 0; i < 3; i++) uh[i] = up[i] * c + fw[i] * s;
