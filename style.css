@@ -145,6 +145,18 @@ html.lite .h4-flick, html.lite .h4-tw, html.lite .h4-fairyB { animation-play-sta
   .parrot-art { transform: scale(.68); }
 }
 
+/* The ski resort on the phones' crop: the same distant resort, but the lifts fill the middle of a narrow screen, so
+   its runs, lights and cables are quieter there (they would shout at 390 px wide) */
+@media (max-aspect-ratio: 3/4) {
+  #h4-resort { opacity: .5; }
+  .h4-rRuns { opacity: .38; }
+  .h4-rGlows { opacity: .4; }
+  .h4-rPools { opacity: .45; }
+  .h4-rFloods { opacity: .45; }
+  .h4-rClear { opacity: .25; }
+  .h4-rCables { opacity: .55; }
+}
+
 /* Navigation pills */
 .nav {
   position: absolute;
