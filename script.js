@@ -2445,11 +2445,11 @@
   /* ---------- Ski resort on the far mountains: chairs ride the three lifts, skiers wind down the floodlit runs ---------- */
 
   // It is far away, so everything is tiny and slow. It moves only while the lake does (frame() calls stepResort), all in
-  // one step 10 times a second (each step repaints the slopes), and stands still under reduced motion and in lite mode:
-  // chairs hang on the cables, skiers are halfway down. The ice reflects #h4-mtns, so the resort lives outside it
+  // one step 10 times a second (5 in lite mode: each step repaints the slopes), and stands still only under reduced
+  // motion: chairs hang on the cables, skiers are halfway down. The ice reflects #h4-mtns, so the resort lives outside it
   // (#h4-rSki) and is drawn once; only its warm haze (#h4-resort) is part of the mountains, so the ice shows a soft glow.
   var resort = { sets: {}, t: 7, last: 0, tmp: [0, 0, 0, 0] };
-  var RIDE = 5, CHAIR_GAP = 22, CAB = 1.8;    // chair speed (scene units a second), room between chairs, half the cable gap
+  var RIDE = 6, CHAIR_GAP = 23, CAB = 1.8;    // chair speed (scene units a second), room between chairs, half the cable gap
   var SKI_INK = ["#24305e", "#24305e", "#1d1420", "#24305e", "#b8433f", "#6b4aa8"];
   var RIDER_INK = ["#24305e", "#24305e", "#b8433f", "#e0457a", "#6b4aa8", "#1d1420"];
   function resortLine(str) {
@@ -2465,6 +2465,25 @@
     var seg = (l[i] - l[i - 1]) || 1, u = Math.max(0, Math.min(1, (d - l[i - 1]) / seg));
     out[2] = (p[i][0] - p[i - 1][0]) / seg; out[3] = (p[i][1] - p[i - 1][1]) / seg;
     out[0] = p[i - 1][0] + out[2] * seg * u; out[1] = p[i - 1][1] + out[3] * seg * u;
+    return out;
+  }
+  // which stretch of its lift's loop a chair is on at distance q: 0 up, 1 round the top wheel, 2 down, 3 round the bottom wheel
+  function chairSeg(L, q) {
+    return q < L.len ? 0 : q < L.len + L.hop ? 1 : q < 2 * L.len + L.hop ? 2 : 3;
+  }
+  // where the chair is (the cables are CAB either side of the line between the stations; the wheels carry it across)
+  function chairAt(L, q, out) {
+    var seg = chairSeg(L, q), u, bulge;
+    if (seg === 0) { out[0] = L.b[0] + L.ux * q + CAB; out[1] = L.b[1] + L.uy * q; }
+    else if (seg === 1) {
+      u = (q - L.len) / L.hop; bulge = Math.sin(Math.PI * u) * CAB * 0.8;
+      out[0] = L.t[0] + CAB * (1 - 2 * u) + L.ux * bulge; out[1] = L.t[1] + L.uy * bulge;
+    } else if (seg === 2) {
+      u = q - L.len - L.hop; out[0] = L.t[0] - L.ux * u - CAB; out[1] = L.t[1] - L.uy * u;
+    } else {
+      u = (q - 2 * L.len - L.hop) / L.hop; bulge = Math.sin(Math.PI * u) * CAB * 0.8;
+      out[0] = L.b[0] - CAB * (1 - 2 * u) - L.ux * bulge; out[1] = L.b[1] - L.uy * bulge;
+    }
     return out;
   }
   function resortTf(o, x, y) {
@@ -2492,13 +2511,16 @@
     ["W", "T"].forEach(function (key) {
       var g = $("h4-rSki" + key), set = { chairs: [], skiers: [] };
       if (!g) return;
-      // chairs: up the right-hand cable (most carry a rider), back down the left one (mostly empty)
+      // chairs: every chair rides the whole loop: up the right-hand cable to the top station, round the wheel there, back
+      // down the left-hand cable (empty) and round the wheel at the bottom, where a new rider may sit down
       Array.prototype.forEach.call(g.querySelectorAll(".h4-rLift"), function (lg) {
         var b = lg.getAttribute("data-b").split(" ").map(Number), t = lg.getAttribute("data-t").split(" ").map(Number);
-        var len = Math.sqrt(Math.pow(t[0] - b[0], 2) + Math.pow(t[1] - b[1], 2)), n = Math.max(4, Math.round(len / CHAIR_GAP)), gap = len / n;
-        var L = { b: b, t: t, len: len, ux: (t[0] - b[0]) / len, uy: (t[1] - b[1]) / len };
-        for (var i = 0; i < 2 * n; i++) {
-          var up = i < n, c = { lift: L, up: up, o: (i % n) * gap + (up ? 0 : gap / 2), lap: 0, rider: Math.random() < (up ? 0.7 : 0.12), tf: "" };
+        var len = Math.sqrt(Math.pow(t[0] - b[0], 2) + Math.pow(t[1] - b[1], 2)), hop = CAB * 2, total = 2 * len + 2 * hop;
+        var n = Math.max(6, Math.round(total / CHAIR_GAP)), gap = total / n;
+        var L = { b: b, t: t, len: len, hop: hop, total: total, ux: (t[0] - b[0]) / len, uy: (t[1] - b[1]) / len };
+        for (var i = 0; i < n; i++) {
+          var s0 = i * gap, c = { lift: L, o: s0, seg: chairSeg(L, s0), rider: false, tf: "" };
+          c.rider = c.seg === 0 && Math.random() < 0.7;
           c.e = el("use", { href: c.rider ? "#h4-rChairR" : "#h4-rChair", fill: RIDER_INK[i % RIDER_INK.length] }, lg);
           set.chairs.push(c);
         }
@@ -2534,16 +2556,17 @@
   function moveResort(set, dt) {
     var i, a = resort.tmp;
     for (i = 0; i < set.chairs.length; i++) {
-      var c = set.chairs[i], L = c.lift, q = c.o + RIDE * resort.t, lap = Math.floor(q / L.len);
-      q -= lap * L.len;
-      if (lap !== c.lap) {   // round the bullwheel inside a station: someone may board (or stay on)
-        c.lap = lap;
-        var r = Math.random() < (c.up ? 0.7 : 0.12);
-        if (r !== c.rider) { c.rider = r; c.e.setAttribute("href", r ? "#h4-rChairR" : "#h4-rChair"); }
-        if (r) c.e.setAttribute("fill", RIDER_INK[Math.floor(Math.random() * RIDER_INK.length)]);
+      var c = set.chairs[i], L = c.lift, q = (c.o + RIDE * resort.t) % L.total, seg = chairSeg(L, q);
+      if (seg !== c.seg) {   // round a wheel inside a station: riders get off at the top, and someone may sit down at the bottom
+        c.seg = seg;
+        var r = seg === 0 && Math.random() < 0.7;
+        if (seg === 0 || seg === 1) {
+          if (r !== c.rider) { c.rider = r; c.e.setAttribute("href", r ? "#h4-rChairR" : "#h4-rChair"); }
+          if (r) c.e.setAttribute("fill", RIDER_INK[Math.floor(Math.random() * RIDER_INK.length)]);
+        }
       }
-      if (c.up) resortTf(c, L.b[0] + L.ux * q + CAB, L.b[1] + L.uy * q);
-      else resortTf(c, L.t[0] - L.ux * q - CAB, L.t[1] - L.uy * q);
+      chairAt(L, q, a);
+      resortTf(c, a[0], a[1]);
     }
     for (i = 0; i < set.skiers.length; i++) {
       var k = set.skiers[i], run = k.run;
@@ -2555,17 +2578,16 @@
       var u = k.d / run.len, hw = (run.w0 + (run.w1 - run.w0) * Math.pow(u, 0.9)) / 2 - 0.9;
       var off = Math.max(0, hw) * k.amp * Math.sin(k.d / k.wave * 6.283 + k.ph);
       resortTf(k, a[0] - a[3] * off, a[1] + a[2] * off);
-      // fade in below the top station, out where the run disappears into the trees
-      var op = Math.round(Math.max(0, Math.min(1, k.d / 6, (run.len - k.d) / 10)) * 10) / 10;
+      // fade in below the top station, out only in the last few units, where the run meets the base
+      var op = Math.round(Math.max(0, Math.min(1, k.d / 5, (run.len - k.d) / 7)) * 10) / 10;
       if (op !== k.op) { k.op = op; k.e.setAttribute("opacity", String(op)); }
     }
   }
   function stepResort(now) {
-    if (perf.lite) { resort.last = now; return; }   // lite mode: a still picture
     var ms = now - resort.last;
-    if (ms < 96) return;
+    if (ms < (perf.lite ? 190 : 96)) return;   // lite mode: 5 slower steps a second (each one repaints the slopes), never a still picture
     resort.last = now;
-    var dt = Math.min(ms, 120) / 1000, set = resort.sets[layoutName === "tall" ? "T" : "W"];
+    var dt = Math.min(ms, 260) / 1000, set = resort.sets[layoutName === "tall" ? "T" : "W"];
     resort.t += dt;
     if (set) moveResort(set, dt);
   }
