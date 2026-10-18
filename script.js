@@ -2018,7 +2018,7 @@
   // The malamutes walk only where both are fully on screen (phones crop the sides of the scene).
   var dogRange = { x0: 430, x1: 1170 };
   function fitDogs() {
-    var p = layout.dogPath, half = 42, l = (0 - view.ox) / view.s + half, r = (view.w - view.ox) / view.s - half;
+    var p = layout.dogPath, half = 62, l = (0 - view.ox) / view.s + half, r = (view.w - view.ox) / view.s - half;
     dogRange.x0 = Math.max(p.x0, l); dogRange.x1 = Math.min(p.x1, r);
     if (dogRange.x1 < dogRange.x0) dogRange.x0 = dogRange.x1 = (dogRange.x0 + dogRange.x1) / 2;
     dogs.x = Math.max(dogRange.x0, Math.min(dogRange.x1, dogs.x));
@@ -2033,7 +2033,7 @@
     for (var id in HITS) {
       var n = $(id), c = n && n.firstElementChild;
       if (!c) continue;
-      if (id === "malamutes") { c.setAttribute("rx", f(Math.max(30, min))); c.setAttribute("ry", f(Math.max(19, min))); }
+      if (id === "malamutes") { c.setAttribute("rx", f(Math.max(46, min))); c.setAttribute("ry", f(Math.max(19, min))); }
       else c.setAttribute("r", f(Math.max(HITS[id], min)));
       if (id in HIT_X) {
         // the phones' lamp post stands near the right edge: keep the whole target on screen
@@ -2635,7 +2635,7 @@
     setT("malamutes", "translate(" + f(dogs.x) + "," + layout.dogPath.y + ")");
     setT("malPair", dogs.dir < 0 ? "scale(-1,1)" : "");
     var hit = node.firstElementChild;
-    if (hit && +hit.getAttribute("cx") !== 9 * dogs.dir) hit.setAttribute("cx", 9 * dogs.dir);
+    if (hit && +hit.getAttribute("cx") !== 22 * dogs.dir) hit.setAttribute("cx", 22 * dogs.dir);
     var walking = dogs.target !== dogs.x && !reduceMotion, wag = now < dogs.wagUntil;
     ["mal1", "mal2"].forEach(function (p, i) {
       var ph = dogs.phase + i * 1.4, a = walking ? Math.sin(ph) * 17 : 0;
