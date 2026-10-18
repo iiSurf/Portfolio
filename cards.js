@@ -53,7 +53,7 @@ window.ABOUT = {
   shopName: "Skate Fitting",
   greeting: "Hi, I'm nick",
   about:
-    "I love figure skating, ask me about how to join the UW Figure Skating Team." +
+    "I love figure skating, ask me about how to join the UW Figure Skating Team. " +
     "This quarter I'm making five projects, and each one gets its own little shop in the village by the lake.",
   traits: ["Hardworking", "Not afraid to fail", "Attentive"],
   keeperSays: "Welcome in! Let's find you the perfect fit.",
@@ -68,7 +68,7 @@ window.ABOUT = {
     {
       heading: "Experience",
       items: [
-        "Software Engineer Intern at Outpave, LLC: August 2026 - Present]",
+        "Software Engineer Intern at Outpave, LLC: August 2026 - Present",
         "[One thing you did or learned there]",
       ],
     },
