@@ -300,3 +300,19 @@ What I asked the AI for, what changed, and what I decided. Newest entries go at 
 
 - A finished card's shop now shows its name on the sign (MYSKATE). A card can set its own sign words with a `shopName` field in `cards.js`; without one the sign uses the card's title. The idea shops still say "Artifact 3", "Artifact 4" and "Artifact 5".
 - Under the shop, "Artifact 2" now sits under the title (like "+ Artifact 1: My Portfolio" under the fitting shop). The small line above the title, which used to say "Artifact 2", now says "Try it", next to the Open badge.
+
+---
+
+## 2026-10-17 · MySkate card: the competition planner and the new look
+
+### What I asked for
+
+- New words for the MySkate card that mention the competition planner and the new look, shown to me before anything changed. I picked the version that is the same length as the old one.
+
+### What changed
+
+- The MySkate card's reflection in `cards.js` now mentions the competition planner (a program laid out on a diagram of the rink, set to the music, with the day planned and a scoreboard for how it went) and what I learned from the redesign: after one redesign did not fit, I asked for ten rough drafts first and chose the look from those. It is 165 words, the same as before, so the board fits the way it did. The title, the link, and the button words are unchanged.
+
+### Checked
+
+- The board at 320, 390, and 1280 wide and on a phone held sideways (844 by 390): the link stays in view at the top, the words scroll under it, and the last sentence can be reached by scrolling. Nothing scrolls sideways.

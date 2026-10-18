@@ -135,11 +135,12 @@ window.ARTIFACTS = [
     reflection:
       "A figure skating practice tracker I will actually use. I plan a session before I skate, log it from my phone at the rink " +
       "(a clock that only counts my time on ice, a one to five skate rating, and a landed or missed counter for jumps), " +
-      "and watch my level, my streak and my blade life build. It keeps everything on my own device with a backup file, so there is no server and no account. " +
-      "I built it with Claude Code in small steps: the skill lists first, then the logic with tests, then the screens, " +
-      "and I went through three rounds of design on a style tile before writing the app. " +
-      "I learned that a real photo of a skate fixed in one round what describing it could not, " +
-      "and that the AI's review and the tests caught bugs I would never have spotted, like screen reader labels and a blank page from my local server. " +
+      "and watch my level, my streak and my blade life build. The newest part is a competition planner: I lay a program out on a diagram of the rink, " +
+      "set each element to the music, plan the day, and record how it went on a scoreboard. " +
+      "Everything stays on my own device, so there is no server and no account. " +
+      "I built it with Claude Code in small steps, and the look took the most tries: after one redesign did not fit, " +
+      "I asked for ten rough drafts first and chose a theater-program look from those. " +
+      "I learned that drafts beat descriptions, and that tests catch bugs I would never spot. " +
       "Every change is in the repo's LOG.md.",
     art: "tracker",
   },
