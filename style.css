@@ -132,9 +132,10 @@ html.lite .h4-flick, html.lite .h4-tw, html.lite .h4-fairyB { animation-play-sta
 .owl-head.turn { transform: rotate(-26deg); }
 /* Where the eagle and the parrot perch: the eagle on a tall shore pine (wide screens) or the hut's roof ridge
    (phones), the parrot on the near lamp post. Each drawing is in centimetres, scaled to its distance:
-   about 25 scene units a metre on the far shore, 90 on the near lamp post (68 on the phones' smaller lamp). */
-#eagle { transform: translate(470px, 494px); }
-.eagle-art { transform: scale(.25); }
+   about 25 scene units a metre by the hut on phones, 90 on the near lamp post (68 on the phones' smaller lamp); the eagle
+   is smaller than that on wide screens (15 units a metre), so it reads as a far-off bird on a distant pine. */
+#eagle { transform: translate(1134px, 457px); }
+.eagle-art { transform: scale(-.15, .15); }
 #parrot, #parrotTap { transform: translate(1314px, 651px); }
 .parrot-art { transform: scale(.9); }
 @media (max-aspect-ratio: 3/4) {

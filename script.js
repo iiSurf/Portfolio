@@ -1950,8 +1950,8 @@
       },
       // the two malamutes walk along the edge of the ice, just in front of the far shore
       dogPath: { y: 621, x0: 430, x1: 1170 },
-      // the eagle's circle when it is tapped, round a point beside its pine (it stays under the lanterns)
-      eagleLoop: { cx: 392, cy: 462, rx: 92, ry: 18 }
+      // the eagle's lap when it is tapped: a small ellipse standing on its perch (it stays under the lanterns)
+      eagleLoop: { rx: 44, ry: 10 }
     },
     tall: {
       viewBox: [0, -200, 1600, 1200],
@@ -1960,7 +1960,7 @@
         horizonY: 590, farY: 640, nearY: 990, skaterHeightFar: 64, skaterHeightNear: 200
       },
       dogPath: { y: 621, x0: 615, x1: 1005 },   // between the big phone-only pines
-      eagleLoop: { cx: 985, cy: 446, rx: 46, ry: 15 }   // over the hut, clear of the bell
+      eagleLoop: { rx: 46, ry: 15 }   // over the hut, clear of the bell
     }
   };
   // The open ice below the far shore and the side banks; skate marks are clipped to it.
@@ -1979,13 +1979,12 @@
     var vb = layout.viewBox.join(" ");
     HERO_SVGS.forEach(function (id) { var s = $(id); if (s) s.setAttribute("viewBox", vb); });
     trails = []; chips = []; iceKey = "";
-    // Tab goes left to right: the eagle's pine is left of the owl on wide screens; on phones its hut roof is right
-    // of the bell, so it comes after the bell (it never meets the title, so painting it last changes nothing)
-    var eagle = $("eagle"), owl = $("owl"), bellG = $("h4-bell");
-    if (eagle && owl && bellG) {
+    // Tab goes left to right: the eagle's perch (the pine right of the hut, or the hut roof on phones) is right of the
+    // bell on both crops, so it comes after the bell (it never meets the title, so painting it last changes nothing)
+    var eagle = $("eagle"), bellG = $("h4-bell");
+    if (eagle && bellG && bellG.nextSibling !== eagle) {
       var had = document.activeElement === eagle;
-      if (name === "tall") bellG.parentNode.insertBefore(eagle, bellG.nextSibling);
-      else owl.parentNode.insertBefore(eagle, owl);
+      bellG.parentNode.insertBefore(eagle, bellG.nextSibling);
       if (had) eagle.focus();
     }
     if (eagleFlight) landEagle();
@@ -2685,13 +2684,16 @@
     if (r > 700) { eagle.ruffleAt = now + 9000 + Math.random() * 9000; r = 0; }
     rot("eagleWing", r > 0 ? -5 * Math.sin(Math.PI * r / 700) : 0, 0, -48);
   }
+  // How big the eagle is, in scene units per centimetre of its drawing: a far-off speck on the wide crop, a little
+  // bigger on the hut roof on phones (style.css sets the perched size to match).
+  function eagleK() { return layoutName === "tall" ? 0.25 : 0.15; }
   function eagleHome() {
-    // the perch in scene units (style.css sets it: a shore pine, or the hut's roof ridge on phones)
-    return layoutName === "tall" ? { x: 955, y: 466, face: -1 } : { x: 470, y: 494, face: 1 };
+    // the perch in scene units (style.css sets it: the tip of a shore pine away from the lifts, or the hut's roof ridge on phones)
+    return layoutName === "tall" ? { x: 955, y: 466, face: -1 } : { x: 1134, y: 457, face: -1 };
   }
   function liftEagle(now) {
     if (eagleFlight || reduceMotion) return;
-    eagleFlight = { t0: now, dur: 5600 };
+    eagleFlight = { t0: now, dur: 5600, last: now, fa: eagleHome().face };
     $("eagleSit").setAttribute("display", "none");
     $("eagleFly").setAttribute("display", "inline");
     flyEagle(now);
@@ -2702,34 +2704,35 @@
     if (sit) sit.setAttribute("display", "inline");
     if (fly) fly.setAttribute("display", "none");
   }
-  // Where the middle of the flying eagle is t (0..1) into its flight, relative to its feet on the perch:
-  // up to its circle, once round, and back down.
+  // Where the middle of the flying eagle is t (0..1) into its flight, relative to its feet on the perch: one lap round
+  // a small ellipse that stands on the perch, starting in the direction the eagle faces and quickest in the middle.
+  // The lap is one smooth curve, so it only turns round at the two ends of the ellipse (never at take-off or landing).
   function eaglePath(t) {
-    var P = eagleHome(), L = layout.eagleLoop, y0 = -8, a0 = Math.atan2((P.y + y0 - L.cy) / L.ry, (P.x - L.cx) / L.rx);
-    var at = function (a) { return { x: L.cx + L.rx * Math.cos(a) - P.x, y: L.cy + L.ry * Math.sin(a) - P.y }; };
-    var S = at(a0), k;
-    if (t < 0.16) { k = ease(t / 0.16); return { x: S.x * k, y: y0 + (S.y - y0) * k - Math.sin(Math.PI * k) * 10 }; }
-    if (t > 0.86) { k = ease((1 - t) / 0.14); return { x: S.x * k, y: y0 + (S.y - y0) * k - Math.sin(Math.PI * k) * 6 }; }
-    // once round: up and away from the perch side first
-    return at(a0 - P.face * 2 * Math.PI * (t - 0.16) / 0.7);
+    var P = eagleHome(), L = layout.eagleLoop, y0 = -30 * eagleK();
+    var s = t + (ease(t) - t) * 0.65, a = Math.PI / 2 - P.face * 2 * Math.PI * s;
+    return { x: L.rx * Math.cos(a), y: y0 - L.ry + L.ry * Math.sin(a) };
   }
   function flyEagle(now) {
-    var fly = $("eagleFly"), t = (now - eagleFlight.t0) / eagleFlight.dur;
+    var fly = $("eagleFly"), F = eagleFlight, t = (now - F.t0) / F.dur;
     if (t >= 1 || !fly) { landEagle(); return; }
-    var p = eaglePath(t), q = eaglePath(Math.min(1, t + 0.01)), vx = q.x - p.x, vy = q.y - p.y;
-    var face = Math.abs(vx) > 0.05 ? (vx > 0 ? 1 : -1) : (eagleFlight.face || eagleHome().face);
-    eagleFlight.face = face;
-    // big wingbeats on the way up and down, a long glide round the circle with a few easy beats; it tilts with the climb
+    var p = eaglePath(t), q = eaglePath(Math.min(1, t + 0.01)), vx = q.x - p.x, vy = q.y - p.y, k = eagleK();
+    // it faces where it flies: it swings round through edge-on over about a tenth of a second at each end of the lap
+    // (one smooth turn, not a jump) and keeps its facing while it hardly moves sideways
+    var want = vx > 0.02 ? 1 : (vx < -0.02 ? -1 : (F.want || F.fa));
+    F.want = want;
+    F.fa += (want - F.fa) * (1 - Math.exp(-Math.min(0.1, (now - F.last) / 1000) / 0.06));
+    F.last = now;
+    // big wingbeats on the way up and down, a long glide round the circle with a few easy beats; the nose follows the climb
     var beat = t < 0.2 || t > 0.82 || (t > 0.45 && t < 0.53), a = beat ? -85 + 62 * Math.sin(now / 75) : -58 + 4 * Math.sin(now / 420);
-    var bank = Math.max(-12, Math.min(12, -vy * 5));
-    setT("eagleFly", "translate(" + f(p.x) + " " + f(p.y) + ") scale(" + f(face * 25) / 100 + " .25) rotate(" + f(bank) + ")");
+    var pitch = Math.max(-14, Math.min(14, Math.atan2(-vy, Math.max(Math.abs(vx), 0.001)) * 57.3)) * Math.max(-1, Math.min(1, F.fa * 3));
+    setT("eagleFly", "translate(" + f(p.x) + " " + f(p.y) + ") scale(" + f(F.fa * k * 100) / 100 + " " + f(k * 100) / 100 + ") rotate(" + f(-pitch) + ")");
     setT("eagleWingN", "translate(-1 -6) rotate(" + f(a) + ")");
     setT("eagleWingF", "translate(3 -9) rotate(" + f(a + 16) + ")");
   }
   // the box the eagle's flight covers, in scene units (the toast keeps clear of it)
   function eagleLoopBox() {
     var L = layout.eagleLoop, P = eagleHome();
-    return [Math.min(L.cx - L.rx, P.x) - 28, Math.min(L.cy - L.ry, P.y) - 26, Math.max(L.cx + L.rx, P.x) + 28, Math.max(L.cy + L.ry, P.y) + 10];
+    return [P.x - L.rx - 28, P.y - 30 * eagleK() - 2 * L.ry - 26, P.x + L.rx + 28, P.y + 10];
   }
 
   // The parrot tilts its head now and then; tapped, it bobs up and down.
