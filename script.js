@@ -1994,7 +1994,7 @@
 
   /* ---------- Fitting the hero drawings to the screen ---------- */
 
-  var view = { s: 1, ox: 0, oy: 0, w: 0, h: 0, dpr: 1 };
+  var view = { s: 1, ox: 0, oy: 0, my: 0, w: 0, h: 0, dpr: 1 };
   function measure() {
     applyLayout();
     var r = $("heroBack").getBoundingClientRect();
@@ -2003,10 +2003,14 @@
     view.s = Math.max(view.w / vb[2], view.h / vb[3]);
     view.ox = (view.w - vb[2] * view.s) / 2 - vb[0] * view.s;
     view.oy = (view.h - vb[3] * view.s) / 2 - vb[1] * view.s;
-    view.dpr = Math.min(window.devicePixelRatio || 1, 2);
+    view.dpr = Math.min(window.devicePixelRatio || 1, 1.5);   // the canvases hold soft lines and dots: 1.5x looks the same and costs far less than 2x or 3x
+    // the marks only show on the ice, the lower part of the lake (scene y 592 down), so their canvas covers just that
+    // part of the screen: a third to a half of the pixels to clear and draw every frame
     var c = $("marks");
+    view.my = Math.max(0, Math.min(view.h - 1, Math.floor(view.oy + 588 * view.s)));
+    c.style.top = view.my + "px"; c.style.bottom = "auto"; c.style.height = (view.h - view.my) + "px";
     c.width = Math.round(view.w * view.dpr);
-    c.height = Math.round(view.h * view.dpr);
+    c.height = Math.round((view.h - view.my) * view.dpr);
     sizeSnow();
     iceClip = null;
     par.dirty = true;
@@ -2266,7 +2270,7 @@
     var c = $("marks"), ctx = c.getContext("2d");
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, c.width, c.height);
-    ctx.setTransform(view.s * view.dpr, 0, 0, view.s * view.dpr, view.ox * view.dpr, view.oy * view.dpr);
+    ctx.setTransform(view.s * view.dpr, 0, 0, view.s * view.dpr, view.ox * view.dpr, (view.oy - view.my) * view.dpr);
     ctx.save();
     var clip = getIceClip();
     if (clip) ctx.clip(clip);
@@ -2396,7 +2400,7 @@
   function sizeSnow() {
     measureSigns();
     var sc = $("snow");
-    snowDpr = perf.lite ? 1 : view.dpr;
+    snowDpr = 1;   // soft little dots: 1x looks the same snow and costs a quarter to a half of the pixels (the canvas is the whole screen)
     sc.width = Math.round(window.innerWidth * snowDpr);
     sc.height = Math.round(window.innerHeight * snowDpr);
   }
@@ -2597,7 +2601,7 @@
   /* ---------- Main loop ---------- */
 
   // The lake only animates while it is on screen; the falling snow keeps going over the village.
-  var heroVisible = true, lastFrame = 0;
+  var heroVisible = true, lastFrame = 0, snowDt = 0, snowLast = 0;
   // Lite mode for slow devices, keyed on real frame time (requestAnimationFrame intervals, so canvas and paint
   // work count, not only the skaters' own code): on when the median frame over ~1.5 s is slower than 25 fps,
   // off again only above ~45 fps (so it does not flip back and forth). It keeps the look: the skaters' faint
@@ -2616,8 +2620,19 @@
     if (rink && rink.setLite) rink.setLite(on ? true : null);
     sizeSnow();
   }
+  // The lake's and the village's CSS animations (lanterns, stars, string lights, smoke) stop while those parts are off
+  // screen or a shop is open (html.hero-off / html.village-off in style.css); nothing to repaint, nothing to count.
+  var villageVisible = true, heroOn = true, villageOn = true;
+  function syncAnimClasses(inShop) {
+    var root = document.documentElement, h = heroVisible && !inShop && (window.scrollY || window.pageYOffset || 0) < view.h - 0.5, v = villageVisible && !inShop;
+    if (h !== heroOn) { heroOn = h; root.classList.toggle("hero-off", !h); }
+    if (v !== villageOn) { villageOn = v; root.classList.toggle("village-off", !v); }
+  }
   function watchHero() {
     if (!window.IntersectionObserver) return;
+    var vil = $("village");
+    if (vil) { villageVisible = false; // the bottom edge of the screen is moved up 1 px: a village that only touches the bottom edge does not count as visible
+      new IntersectionObserver(function (entries) { villageVisible = entries[entries.length - 1].isIntersecting; }, { rootMargin: "0px 0px -1px 0px" }).observe(vil); }
     // the top edge of the screen is moved down 1 px, so a lake whose bottom edge only touches the top of the screen
     // (the page parked at the village, where "Visit the village" and "Artifacts" land) counts as hidden
     new IntersectionObserver(function (entries) { heroVisible = entries[entries.length - 1].isIntersecting; }, { rootMargin: "-1px 0px 0px 0px" }).observe($("top"));
@@ -2626,6 +2641,7 @@
     var ms = lastFrame ? now - lastFrame : 0, dt = lastFrame ? Math.min(ms / 1000, 0.05) : 0.016;
     lastFrame = now;
     var inShop = document.documentElement.classList.contains("in-shop");
+    syncAnimClasses(inShop);
     // also checked against the scroll position: inside a cross-origin frame the observer ignores rootMargin
     if (heroVisible && !inShop && (window.scrollY || window.pageYOffset || 0) < view.h - 0.5) {
       watchFrames(ms);
@@ -2636,7 +2652,11 @@
       stepResort(now);
       applyParallax();
     }
-    if (!inShop) tickSnow(now, dt);   // an open shop covers the whole screen
+    // an open shop covers the whole screen; the snow falls slowly, so it is drawn about 30 times a second
+    if (!inShop) {
+      snowDt += dt;
+      if (!snowLast || now - snowLast >= 28) { tickSnow(now, snowDt); snowDt = 0; snowLast = now; }
+    }
   }
 
   /* ---------- The animals: drawn true to scale for where they stand, with small, calm movements ---------- */
