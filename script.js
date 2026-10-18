@@ -3895,6 +3895,11 @@
     function C(x, y, r, fill, more) { return '<circle cx="' + x + '" cy="' + y + '" r="' + r + '" fill="' + fill + '"' + (more || "") + "/>"; }
     function E(x, y, rx, ry, fill, more) { return '<ellipse cx="' + x + '" cy="' + y + '" rx="' + rx + '" ry="' + ry + '" fill="' + fill + '"' + (more || "") + "/>"; }
     function G(more, inner) { return "<g" + more + ">" + inner + "</g>"; }
+    // a part that turns round the point (x, y) (the CSS in style.css animates the class): the part sits in a group
+    // moved to the pivot, so the rotation needs no transform-origin or transform-box (which Safari handles differently)
+    function pivot(x, y, cls, inner) {
+      return G(' transform="translate(' + x + "," + y + ')"', G(' class="' + cls + '"', G(' transform="translate(' + -x + "," + -y + ')"', inner)));
+    }
     // a simple mitten hand: fingers point along angle a (degrees); flip puts the thumb on the other side
     function hand(x, y, a, flip, skinC, lineC) {
       return G(' transform="translate(' + x + "," + y + ") rotate(" + a + ")" + (flip ? " scale(1,-1)" : "") + '"',
@@ -3972,7 +3977,7 @@
       P("M150,366 Q160,350 172,360 Q178,354 186,364 L188,366 Z", "#fff8f3", ' opacity=".95"');
 
     // ---- the skater's free foot in a pink sock, swinging a little ----
-    svg += G(' class="fs-swing"',
+    svg += pivot(262, 292, "fs-swing",
       S("M260,292 L232,362", "#a87455", 18) +
       P("M225,342 L243,349 L235,366 Q247,372 250,382 Q250,390 240,388 Q230,385 223,372 Q218,362 225,342 Z", "#ff8fc8") +
       S("M226,344 L243,351", "#fff8f3", 4) + C(231, 360, 1.6, "#fff8f3") + C(238, 377, 1.6, "#fff8f3"));
@@ -4010,9 +4015,10 @@
       P("M314,390 Q314,380 324,378 H344 Q352,378 352,386 V394 H314 Z", "#4a1e28") + S("M316,394 H351", "#e8cfae", 2);
     // far arm (in shade): comes forward from the far shoulder, its elbow just clear of the near arm, and holds the
     // lace ends up
-    svg += G(' class="fs-tug"',
+    // (the lace ends run down into the boot, so they stay joined to it while the hand pulls them up and away)
+    svg += pivot(372, 250, "fs-tug",
       S("M372,250 L341,283", "#e6cfb0", 15) + S("M339,286 L312,315", kSkin, 11.5) + S("M343,280 L335,290", "#e6cfb0", 14) +
-      S("M284,330 Q292,318 302,315 M285,333 Q295,325 305,321", "#ffffff", 1.6) +
+      S("M286,344 L284,330 Q292,318 302,315 M288,346 L285,333 Q295,325 305,321", "#ffffff", 1.6) +
       hand(306, 316, 155, true, kSkin, "#d9a585"));
     // near leg: knee on the floor, toes tucked under
     svg += S("M408,318 L414,384", pants, 28) + S("M414,386 L486,374", pants, 22) +
@@ -4030,7 +4036,7 @@
       P("M397,332 L417,329 L420,347 L400,350 Z", "#9a3634") +
       S("M404,334 L400,316", "#a8794a", 5) + S("M400,316 L398,305 Q397,299 402,300 Q406,301 404,306", "#dfe7f4", 2);   // lacing hook
     // head: tilted down toward the laces
-    svg += S("M368,246 L357,233", kSkin, 15) +
+    svg += pivot(368, 246, "fs-nod", S("M368,246 L357,233", kSkin, 15) +
       P("M352,200 C384,198 390,226 381,244 C373,250 362,248 356,242 Z", kHair) +
       C(346, 214, 30, kSkin) +
       C(372, 220, 7, kSkin) + C(372, 220, 3.2, "#d9a585", ' opacity=".6"') +
@@ -4041,7 +4047,7 @@
         P("M314,206 C312,170 380,170 378,206 Z", "#e0457a") +
         '<rect x="310" y="198" width="72" height="13" rx="6.5" fill="#fbe9d0"/>' +
         S("M320,199 V210 M330,199 V211 M340,199 V211 M350,199 V211 M360,199 V211 M370,199 V210", "#e8cfae", 2) +
-        C(346, 172, 9, "#fbe9d0"));
+        C(346, 172, 9, "#fbe9d0")));
 
     // ---- the new skate: crisp white boot, shiny blade ----
     svg += P("M260,290 C256,306 258,320 261,334 L282,334 C283,320 284,304 283,290 Z", tights) + C(271, 289, 12.6, tights) +
@@ -4049,10 +4055,9 @@
         blade: "#e8eef8", bladeShade: "#b9c6da", glint: "#7be3ff" });
 
     // ---- near arm: hand pressing the laces at the hooks ----
-    svg += G(' class="fs-press"',
-      S("M348,298 L307,337", kSkin, 12) +
-      S("M380,252 L346,300", "#dcc29f", 19) + S("M380,252 L346,300", top, 15.5) + S("M350,295 L343,304", "#f3dfc4", 15.5) +
-      hand(301, 342, 136, true, kSkin, "#d9a585"));
+    svg += pivot(380, 252, "fs-press",
+      pivot(348, 298, "fs-work", S("M348,298 L307,337", kSkin, 12) + hand(301, 342, 136, true, kSkin, "#d9a585")) +
+      S("M380,252 L346,300", "#dcc29f", 19) + S("M380,252 L346,300", top, 15.5) + S("M350,295 L343,304", "#f3dfc4", 15.5));
 
     // ---- props in front: a foot-measuring device and a lacing hook ----
     svg += P("M500,410 L590,410 L606,396 L516,396 Z", "#6b7590") + P("M502,407 L588,407 L602,395 L516,395 Z", "#c7d2e3") +
