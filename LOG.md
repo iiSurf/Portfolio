@@ -316,3 +316,43 @@ What I asked the AI for, what changed, and what I decided. Newest entries go at 
 ### Checked
 
 - The board at 320, 390, and 1280 wide and on a phone held sideways (844 by 390): the link stays in view at the top, the words scroll under it, and the last sentence can be reached by scrolling. Nothing scrolls sideways.
+
+---
+
+## 2026-10-17 · Final polish: animals, lifts, a man on the ice, a lighter page, and the shopkeeper lacing again
+
+### What I asked for
+
+- The eagle sat on the left chairlift's bottom station, so it looked giant. It should look like a far-off bird.
+- The eagle flipped back and forth for a moment after a tap.
+- On phones the three lifts and the glowing runs stood out too much for a distant resort.
+- The page ran slowly on weak phones.
+- The skiers stopped and froze halfway down the mountain, and the lift did not run as far up the hill as the chairs.
+- The two malamutes looked stuck together.
+- One of the skaters should be a man with black boots.
+- The shopkeeper in the skate fitting shop (Artifact 1) no longer laced up the skate on the skater.
+- Anything else that needed fixing or polishing.
+
+### What changed
+
+- **Eagle:** it now perches on the tip of a far pine right of the hut (away from the lifts) and is smaller (15 units to the metre instead of 25). Its tap flight is one smooth lap round a small ellipse that stands on the perch. It used to take off one way and loop the other, so it mirrored left, right, left within a second and a half. Now it turns round once at each end of the lap, with a quick swing through edge-on. On phones it still sits on the hut roof. The Tab order follows the new perch (owl, malamutes, bell, eagle, parrot).
+- **Malamutes:** the second dog walks about a dog-length behind the first (it was 13 units away, so the bodies overlapped), and their tap area is wider to match.
+- **Ski resort:**
+  - The skiers and chairs freezing was lite mode. Lite mode turns on by itself when the lake runs slower than 25 frames a second, and it used to stop the resort completely. In lite mode the resort now moves 5 times a second, and only reduced motion keeps it still.
+  - Every chair now rides the whole loop: up the right-hand cable to the top station, round the wheel, down the left-hand cable and round the bottom wheel, where a new rider may sit down. Before, a chair that reached the top simply reappeared at the bottom.
+  - Skiers fade out only in the last few units of their run, so they reach the base.
+- **Phones:** the resort is quieter on the tall crop (runs, floodlights, glow strokes, cables and haze are dimmer). Wide screens look the same as before.
+- **A man on the ice:** the third skater has short hair, a teal jacket, black trousers, broader shoulders and black boots (the others keep white ones). His reflection matches.
+- **Lighter page:**
+  - The lanterns, stars, string lights and smoke move in small steps (5 to 8 a second) instead of 60, and stop while the lake or the village is off screen or a shop is open.
+  - The skate-marks canvas covers only the ice and is drawn at most 1.5x. The snow canvas is 1x and drawn about 30 times a second.
+  - Each village shop is its own layer, so its blurred shadow is not redrawn on every flicker of the string lights.
+  - Measured in headless Chrome with the processor slowed 8 times: the desktop crop went from about 30 to about 60 frames a second, the phone crop from about 47 to 60. Lite mode now needs about 16x slowdown instead of 12x to switch on.
+  - Reduced motion still stops everything.
+- **Shopkeeper:** the lacing is back and easier to see. The far hand lifts the lace ends and pulls them snug, the near hand works the laces, and the head dips with each pull (one big pull, one small one, then a rest). It was a 4 degree wobble for a second of every 3, and lite mode paused it. Lite mode can stay on inside a shop, because the lake only re-checks its speed while it is on screen. The shop's moving parts no longer pause for lite mode. The arms and head turn round their shoulder, elbow and neck through small groups, so this does not depend on `transform-box`.
+- **Small fixes:** "Team.This" in the About text now has its space, a stray `]` after "Present" in the resume is gone, and the "Build log" links open `LOG.md` on GitHub (the copy on the live site is served as raw markdown, which some browsers download instead of showing).
+
+### Checked
+
+- Headless Chrome at 390, 768, 844 by 390 (sideways), 1280, 1440, 1920 and 2560 wide: no console errors, no sideways scrolling, all six secrets found with real clicks at 390 and 1280, keyboard Tab and Enter on the eagle, reduced motion (nothing moves, the eagle does not fly).
+- Not checked: a real phone, Safari or Firefox.
