@@ -356,3 +356,20 @@ What I asked the AI for, what changed, and what I decided. Newest entries go at 
 
 - Headless Chrome at 390, 768, 844 by 390 (sideways), 1280, 1440, 1920 and 2560 wide: no console errors, no sideways scrolling, all six secrets found with real clicks at 390 and 1280, keyboard Tab and Enter on the eagle, reduced motion (nothing moves, the eagle does not fly).
 - Not checked: a real phone, Safari or Firefox.
+
+---
+
+## 2026-10-18 · MySkate card: the new look
+
+### What I asked for
+
+- Two changes to the MySkate card so it matches the app after its last redesign.
+
+### What changed
+
+- The reflection in `cards.js` now says "a one to five star rating" (the app rates with stars now) and "I asked for rough drafts first, and after testing it at the rink I chose a calmer, easier-to-read look from a second round" (instead of the theater-program look). The title, link, and button words are unchanged.
+- The stylesheet and scripts are at `?v=20261018`, so a visitor's cached copy of the old card text is not used.
+
+### Checked
+
+- On a local server at 390 wide: the card opens, shows the new wording, the old wording is gone, and there are no console errors.

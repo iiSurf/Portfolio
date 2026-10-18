@@ -134,12 +134,12 @@ window.ARTIFACTS = [
     linkLabel: "Open MySkate",
     reflection:
       "A figure skating practice tracker I will actually use. I plan a session before I skate, log it from my phone at the rink " +
-      "(a clock that only counts my time on ice, a one to five skate rating, and a landed or missed counter for jumps), " +
+      "(a clock that only counts my time on ice, a one to five star rating, and a landed or missed counter for jumps), " +
       "and watch my level, my streak and my blade life build. The newest part is a competition planner: I lay a program out on a diagram of the rink, " +
       "set each element to the music, plan the day, and record how it went on a scoreboard. " +
       "Everything stays on my own device, so there is no server and no account. " +
       "I built it with Claude Code in small steps, and the look took the most tries: after one redesign did not fit, " +
-      "I asked for ten rough drafts first and chose a theater-program look from those. " +
+      "I asked for rough drafts first, and after testing it at the rink I chose a calmer, easier-to-read look from a second round. " +
       "I learned that drafts beat descriptions, and that tests catch bugs I would never spot. " +
       "Every change is in the repo's LOG.md.",
     art: "tracker",
