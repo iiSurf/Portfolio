@@ -390,4 +390,6 @@ What I asked the AI for, what changed, and what I decided. Newest entries go at 
 ### Checked
 
 - On a local server at 390 and 1280 wide: the Artifact 3 shop opens, the card shows the title, the button, and the whole reflection (it scrolls in its box, like the other cards), the button opens the repository in a new tab, nothing scrolls sideways, and there are no console errors. At 1280 the shop matches the Artifact 2 shop.
-- Not checked: the link itself, because the repository is not on GitHub yet. It has to be created and pushed before this card goes live, or the button leads to a missing page.
+- The repository went up first, then this card, so the button never led to a missing page.
+- Live, after GitHub Pages published it: https://iisurf.github.io/Portfolio/ loads the `?v=20261023` files, and at 390 and 1280 wide the Artifact 3 shop shows the card and the whole reflection, the button opens https://github.com/iiSurf/MySkate-Coach (public, its README rendered) in a new tab, nothing scrolls sideways, and there are no console errors. The Artifact 2 shop looks the same at both sizes.
+- Not checked: a real phone, Safari, or Firefox.
