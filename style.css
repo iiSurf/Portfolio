@@ -671,6 +671,28 @@ a.board-link:hover, a.board-link:focus-visible { color: var(--neon); outline: no
   .keeper { right: 3vw; transform: none; bottom: calc(13svh - 18px); height: 52vh; height: 52svh; }
 }
 
+/* ---------- Inside Artifact 3's shop: the coaches' room (coachInteriorHTML in script.js) ----------
+   The coach at the window in front of the rink, where the skaters glide past (each one's resting place is in view, for
+   reduced motion). */
+.coach-room { background: #e8d8c3; }
+/* a darker ring, so the way back stands out on the light wall */
+.coach-room .int-back { box-shadow: 0 6px 18px rgba(0, 0, 0, .22), 0 0 0 3px #a8794a; }
+.rink-skater.far { animation: rinkFar 34s linear infinite; }
+.rink-skater.mid { animation: rinkMid 27s linear -11s infinite; }
+.rink-skater.near { animation: rinkNear 21s linear -6s infinite; }
+@keyframes rinkFar { from { transform: translateX(-460px); } to { transform: translateX(1540px); } }
+@keyframes rinkMid { from { transform: translateX(410px); } to { transform: translateX(-1590px); } }
+@keyframes rinkNear { from { transform: translateX(-1180px); } to { transform: translateX(820px); } }
+/* No counter here: the coach stands at the window, cut off at the waist by the bottom of the screen (a little below it, so the
+   gentle bob never shows a gap) */
+.coach-room .keeper { right: 6vw; bottom: -8px; width: min(340px, 27vw); }
+@media (max-width: 900px), (max-aspect-ratio: 1/1) {
+  .coach-room .keeper { right: 50%; bottom: -8px; width: auto; height: 30vh; height: 30svh; }
+}
+@media (min-aspect-ratio: 1/1) and (max-height: 520px) {
+  .coach-room .keeper { right: 3vw; bottom: -8px; width: auto; height: 62svh; }
+}
+
 /* ---------- Inside the skate fitting shop ----------
    Like a real skate shop: a pale slatwall runs from the floor almost to the ceiling, right of the snowy window.
    The letter board hangs on it from two hooks; beside it a wall of figure skate boots sits at eye level (framed

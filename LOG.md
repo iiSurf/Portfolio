@@ -393,3 +393,28 @@ What I asked the AI for, what changed, and what I decided. Newest entries go at 
 - The repository went up first, then this card, so the button never led to a missing page.
 - Live, after GitHub Pages published it: https://iisurf.github.io/Portfolio/ loads the `?v=20261023` files, and at 390 and 1280 wide the Artifact 3 shop shows the card and the whole reflection, the button opens https://github.com/iiSurf/MySkate-Coach (public, its README rendered) in a new tab, nothing scrolls sideways, and there are no console errors. The Artifact 2 shop looks the same at both sizes.
 - Not checked: a real phone, Safari, or Firefox.
+
+---
+
+## 2026-10-23 · Artifact 3's shop: a coaches' room
+
+### What I asked for
+
+- A room of its own inside the Artifact 3 shop, more like a coaches' room, so Artifact 3 has its own theme. Keep the shop's outside as it is. Reference photos: a ballet room, a warm locker room, an arena with seats, a rink with tall windows, a studio with backlit arches, and a gym; or a coaches' room overlooking the rink through glass.
+- After the first drafts: no wall in front of the coach. Then I asked Claude to choose between the two drafts.
+
+### What changed
+
+- Two drafts were drawn in the real page (a warm studio by day, and a coaches' box over the arena at night) and shown side by side. The first round's rink showed too little ice, so it was redrawn as seen from above, with the ice filling the glass. The counter in front of the coach was taken out.
+- Chosen: the warm studio by day. The shop whose card has the coach picture now opens into its own room (`coachInteriorHTML` in `script.js`, the coaches' room section of `style.css`): warm plaster walls with three wide arches, softly lit round their edges, looking down on a sunlit rink (tall windows and trees on the far side, the ice with its markings in perspective) where three skaters glide past; dome lamps, a little olive tree, a purple skate bag, and a wooden floor with the sun on it.
+- The coach is the shop's shopkeeper (same face and hair) in a navy team jacket with the shop's star, a stopwatch on a lanyard, and a clipboard. There is no counter: the coach stands at the window, cut off at the waist by the bottom of the screen. The bubble says "Welcome to the coaches' room! Everything about this one is on the board."
+- The board (the card) is the same as in every shop, now built by one shared function (`cardBoardHTML`). The other shops are unchanged. The reference photos are not in the site: everything is drawn.
+- The skaters glide with CSS animations; with reduced motion they stand still, each one in view.
+- The stylesheet and scripts are at `?v=20261023b`.
+
+### Checked
+
+- On a local server (MySkate's no-cache server) at 320 by 568, 390 by 844, 768 by 1024, 844 by 390 (a phone held sideways), 1280 by 800, and 1920 by 1080: the room opens, nothing scrolls sideways, the coach is in view and clear of the board, and on a desktop the bubble does not cover the board. No console errors.
+- With every animation stopped (as reduced motion does): all three skaters are in view.
+- The way back to the village works, Artifact 4's shop still has its counter and shopkeeper, and the About shop still has the fitting room. At 320 by 568 the board hides its top line, the same as every other shop already does on short screens.
+- Not checked: a real phone, Safari, Firefox, and the live site (not pushed yet).

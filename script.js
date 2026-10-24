@@ -3360,8 +3360,9 @@
     { skin: "#f5d3b8", hair: "#c98a4a", top: "#e6fbff", style: "earmuffs", hat: "#e0457a" }
   ];
 
-  // An original, friendly shopkeeper drawn from the waist up (the counter hides the rest).
-  function keeperSVG(i) {
+  // An original, friendly shopkeeper drawn from the waist up (the counter hides the rest). outfit, when given, dresses them
+  // differently: { body } is drawn instead of the top and apron, { collar } over the neck (the coach's team jacket).
+  function keeperSVG(i, outfit) {
     var k = KEEPERS[i % KEEPERS.length], p = PALETTE[i % PALETTE.length];
     var hairBack = "", hairFront = "", extra = "";
     if (k.style === "beanie") {
@@ -3384,14 +3385,16 @@
       hairFront = '<path d="M62,110 C58,62 162,62 158,110 C150,92 128,82 110,84 C92,82 70,92 62,110 Z" fill="' + k.hair + '"/>';
       extra = '<path d="M60,112 C60,56 160,56 160,112" fill="none" stroke="' + k.hat + '" stroke-width="7"/><circle cx="60" cy="118" r="15" fill="#fbe9d0"/><circle cx="160" cy="118" r="15" fill="#fbe9d0"/>';
     }
-    return '<svg class="keeper-svg" viewBox="0 0 220 280" aria-hidden="true">' +
-      hairBack +
+    var body = outfit ? outfit.body :
       '<path d="M22,280 C22,206 58,184 110,184 C162,184 198,206 198,280 Z" fill="' + k.top + '"/>' +
       '<path d="M66,200 L154,200 L162,280 L58,280 Z" fill="' + p.wall + '"/>' +
       '<path d="M66,200 L88,186 M154,200 L132,186" stroke="' + p.wall + '" stroke-width="6" stroke-linecap="round"/>' +
       '<rect x="88" y="234" width="44" height="26" rx="6" fill="#000" opacity=".14"/>' +
-      '<g transform="translate(110,224)" filter="url(#fNeon)"><path d="' + (NEON[(window.ARTIFACTS[i] || {}).art] || NEON.mountain) + '" fill="none" stroke="' + p.neon + '" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></g>' +
+      '<g transform="translate(110,224)" filter="url(#fNeon)"><path d="' + (NEON[(window.ARTIFACTS[i] || {}).art] || NEON.mountain) + '" fill="none" stroke="' + p.neon + '" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></g>';
+    return '<svg class="keeper-svg" viewBox="0 0 220 280" aria-hidden="true">' +
+      hairBack + body +
       '<rect x="98" y="150" width="24" height="40" rx="10" fill="' + k.skin + '"/>' +
+      (outfit && outfit.collar ? outfit.collar : "") +
       '<circle cx="62" cy="118" r="10" fill="' + k.skin + '"/><circle cx="158" cy="118" r="10" fill="' + k.skin + '"/>' +
       '<circle cx="110" cy="112" r="49" fill="' + k.skin + '"/>' +
       '<g class="keeper-eyes"><ellipse cx="92" cy="115" rx="4.5" ry="5.5" fill="#1d1420"/><ellipse cx="128" cy="115" rx="4.5" ry="5.5" fill="#1d1420"/></g>' +
@@ -3401,11 +3404,28 @@
       "</svg>";
   }
 
-  function interiorHTML(a, i) {
-    var p = PALETTE[i % PALETTE.length], done = a.status === "done";
+  // The board every artifact's shop shows (the coaches' room too): the top (name, title and the link) stays put and the
+  // words scroll under it, like the fitting shop's board.
+  function cardBoardHTML(a) {
+    var done = a.status === "done";
     var link = a.link
       ? '<a class="board-link" href="' + esc(a.link) + '"' + (/^https?:/.test(a.link) ? ' target="_blank" rel="noopener"' : "") + ">" + esc(a.linkLabel || "Open the artifact") + " &rarr;</a>"
       : '<span class="board-link pending">Link coming when it\'s built</span>';
+    return '<section class="board card-board" aria-labelledby="boardTitle">' +
+        '<div class="fit-top">' +
+          '<div class="row head"><span>Artifact ' + esc(a.number) + '</span><span class="tag">' + (done ? "&#9733; Open" : "&#9825; Idea") + "</span></div>" +
+          '<h2 class="row title" id="boardTitle">' + esc(a.title) + "</h2>" +
+          '<div class="row card-go">' + link + "</div>" +
+        "</div>" +
+        '<div class="fit-scroll">' +
+          '<div class="row label">' + (done ? "Reflection" : "The idea") + "</div>" +
+          '<p class="board-text">' + esc(a.reflection) + "</p>" +
+        "</div>" +
+      "</section>";
+  }
+
+  function interiorHTML(a, i) {
+    var p = PALETTE[i % PALETTE.length], done = a.status === "done";
     var say = done ? "Welcome in! Everything about this one is on the board." : "Welcome! This shop is still an idea. Here's the plan.";
     return '<div class="int-wall" style="--wall:' + p.wall + ";--neon:" + p.neon + ";--awn:" + p.awn + '">' +
       '<svg class="int-decor" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" aria-hidden="true">' +
@@ -3431,24 +3451,154 @@
         '<g fill="#2f9a6a"><ellipse cx="1452" cy="176" rx="12" ry="26" transform="rotate(20 1452 176)"/><ellipse cx="1468" cy="200" rx="10" ry="30"/><ellipse cx="1492" cy="190" rx="11" ry="28" transform="rotate(-10 1492 190)"/><ellipse cx="1512" cy="172" rx="12" ry="24" transform="rotate(-24 1512 172)"/></g>' +
       "</svg>" +
       '<button type="button" class="int-back" id="intBack"><span aria-hidden="true">&larr;</span> Back to the village</button>' +
-      // the same board as the fitting shop's: the top (name, title and the link) stays put and the words scroll under it
-      '<section class="board card-board" aria-labelledby="boardTitle">' +
-        '<div class="fit-top">' +
-          '<div class="row head"><span>Artifact ' + esc(a.number) + '</span><span class="tag">' + (done ? "&#9733; Open" : "&#9825; Idea") + "</span></div>" +
-          '<h2 class="row title" id="boardTitle">' + esc(a.title) + "</h2>" +
-          '<div class="row card-go">' + link + "</div>" +
-        "</div>" +
-        '<div class="fit-scroll">' +
-          '<div class="row label">' + (done ? "Reflection" : "The idea") + "</div>" +
-          '<p class="board-text">' + esc(a.reflection) + "</p>" +
-        "</div>" +
-      "</section>" +
+      cardBoardHTML(a) +
       '<div class="keeper"><p class="keeper-say">' + say + "</p>" + keeperSVG(i) + "</div>" +
       '<div class="counter" aria-hidden="true">' +
         '<svg class="counter-bell" viewBox="0 0 60 44"><path d="M8,36 Q8,10 30,10 Q52,10 52,36 Z" fill="#f2b83f"/><rect x="2" y="36" width="56" height="7" rx="3" fill="#c48a1e"/><circle cx="30" cy="7" r="5" fill="#f2b83f"/></svg>' +
         '<svg class="counter-mug" viewBox="0 0 60 70"><path class="steam" d="M22,20 Q16,12 22,4 M34,20 Q28,12 34,4" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/><rect x="8" y="26" width="36" height="40" rx="7" fill="#fbe9d0"/><path d="M44,34 Q56,34 56,46 Q56,56 44,56" stroke="#fbe9d0" stroke-width="6" fill="none"/></svg>' +
         '<svg class="counter-plant" viewBox="0 0 70 90"><g fill="#2f9a6a"><ellipse cx="22" cy="34" rx="9" ry="22" transform="rotate(-24 22 34)"/><ellipse cx="35" cy="26" rx="9" ry="25"/><ellipse cx="48" cy="34" rx="9" ry="22" transform="rotate(24 48 34)"/></g><path d="M14,56 H56 L50,88 H20 Z" fill="#c0532a"/></svg>' +
       "</div>" +
+    "</div>";
+  }
+
+  /* ---------- Inside Artifact 3's shop: the coaches' room ----------
+     The shop whose card has the "coach" picture gets a room of its own: the coach stands at the window (no counter in front),
+     clipboard in hand, and behind them the rink, seen through glass, where skaters glide past. The board, the way back and
+     the bubble are the same as in every shop.
+     It is a warm plaster studio by day, looking down on the rink through three wide arches (the owner chose it from two drafts;
+     the other was a coaches' box over the arena at night). The room is a 1600 x 1000 picture cut to the screen (phones see its
+     middle third), so the rink runs the whole width. */
+
+  // The coach: the shop's shopkeeper (same face and hair) in a team jacket, a stopwatch on a lanyard, the shop's star on the
+  // chest, and a clipboard with today's plan.
+  function coachSVG(i) {
+    var p = PALETTE[i % PALETTE.length], k = KEEPERS[i % KEEPERS.length];
+    return keeperSVG(i, {
+      body:
+        '<path d="M22,280 C22,206 58,184 110,184 C162,184 198,206 198,280 Z" fill="#26346e"/>' +
+        '<path d="M88,188 L110,222 L132,188 Z" fill="#eef2ff"/>' +
+        '<path d="M40,214 C33,234 30,258 30,280 M180,214 C187,234 190,258 190,280" stroke="' + p.neon + '" stroke-width="5" fill="none" stroke-linecap="round"/>' +
+        '<path d="M110,222 V280" stroke="#d8e0f2" stroke-width="3"/>' +
+        '<g transform="translate(156,236) scale(.62)" filter="url(#fNeon)"><path d="' + NEON.coach + '" fill="none" stroke="' + p.neon + '" stroke-width="3" stroke-linejoin="round"/></g>' +
+        '<path d="M99,190 Q103,230 124,245 M121,190 Q127,226 124,245" stroke="#e0457a" stroke-width="3" fill="none"/>' +
+        '<rect x="120" y="240" width="8" height="6" rx="2" fill="#e8ecf5"/><circle cx="124" cy="258" r="13" fill="#e8ecf5"/><circle cx="124" cy="258" r="9.5" fill="#1d1420"/>' +
+        '<path d="M124,258 L128.5,251.5" stroke="#ff7aa8" stroke-width="2.2" stroke-linecap="round"/>' +
+        // the clipboard with today's plan, held against the jacket
+        '<g transform="rotate(-8 66 250)"><rect x="38" y="214" width="56" height="70" rx="6" fill="#8a6238"/><rect x="44" y="222" width="44" height="56" rx="2" fill="#fffaf0"/>' +
+          '<rect x="56" y="208" width="20" height="12" rx="3" fill="#c9d2e3"/><path d="M50,234 H82 M50,242 H78 M50,250 H82" stroke="#a7b0c4" stroke-width="2.4" stroke-linecap="round"/>' +
+          '<path d="M52,266 C56,257 67,257 69,263 C71,270 60,272 62,265" stroke="#e0457a" stroke-width="2.2" fill="none" stroke-linecap="round"/></g>' +
+        '<circle cx="92" cy="258" r="9" fill="' + k.skin + '"/>',
+      collar: '<path d="M84,186 L110,222 L136,186" fill="none" stroke="#3b4c94" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>'
+    });
+  }
+
+  // A skater in a spiral, facing right, feet at 0,0.
+  function skaterOnIce(dress, skin) {
+    return '<ellipse cx="0" cy="2" rx="26" ry="4" fill="#1d1420" opacity=".12"/>' +
+      '<path d="M-2,0 L1,-30" stroke="#2a2340" stroke-width="6" stroke-linecap="round"/>' +
+      '<path d="M1,-30 L-32,-44" stroke="#2a2340" stroke-width="6" stroke-linecap="round"/>' +
+      '<path d="M-12,1 H10" stroke="#cfd6e6" stroke-width="3" stroke-linecap="round"/>' +
+      '<path d="M1,-28 Q6,-44 14,-56" stroke="' + dress + '" stroke-width="15" stroke-linecap="round"/>' +
+      '<path d="M10,-52 L36,-56 M10,-52 L-14,-60" stroke="' + skin + '" stroke-width="4" stroke-linecap="round"/>' +
+      '<circle cx="18" cy="-66" r="8.5" fill="' + skin + '"/>' +
+      '<path d="M11,-70 Q18,-81 27,-68" stroke="#2a1b30" stroke-width="6" fill="none" stroke-linecap="round"/>';
+  }
+
+  // The rink beyond the glass, seen from above: blue benches under tall windows and a white arched roof on the far side, the
+  // far boards, and the ice filling the rest of the glass, its markings in perspective and three skaters gliding past (each
+  // one's resting place is in view, for reduced motion).
+  function rinkView() {
+    var s = "", x, r, B = 300, I = B + 33;   // B: the top of the far boards; I: where the ice starts
+    s += '<rect x="0" y="0" width="1600" height="' + B + '" fill="#e9eff6"/>' +
+      '<path d="M-200,170 Q800,-210 1800,170" fill="none" stroke="#d3deea" stroke-width="20"/>' +
+      '<path d="M520,6 Q800,-30 1080,6 L1060,40 Q800,10 540,40 Z" fill="#d2e8fb"/>' +
+      '<rect x="0" y="96" width="1600" height="128" fill="#bcd6ec"/>';
+    for (x = 40; x < 1600; x += 130) s += '<ellipse cx="' + x + '" cy="' + (190 + (x % 3) * 6) + '" rx="66" ry="' + (44 + (x % 5) * 6) + '" fill="#9db7a8" opacity=".8"/>';
+    for (x = 0; x <= 1600; x += 100) s += '<rect x="' + (x - 5) + '" y="96" width="10" height="132" fill="#2f5aa8"/>';
+    s += '<rect x="0" y="92" width="1600" height="10" fill="#2f5aa8"/><rect x="0" y="158" width="1600" height="6" fill="#2f5aa8"/>' +
+      '<rect x="0" y="228" width="1600" height="62" fill="#c9d6e6"/>';
+    for (r = 0; r < 3; r++) s += '<rect x="0" y="' + (236 + r * 18) + '" width="1600" height="10" rx="4" fill="#3f6fc0"/>';
+    s += [270, 800, 1330].map(function (sx) { return '<rect x="' + (sx - 12) + '" y="228" width="24" height="62" fill="#aebdd0"/>'; }).join("");
+    // the far boards (a navy cap, white, a yellow kick plate) with the glass above them
+    s += '<rect x="0" y="' + (B - 48) + '" width="1600" height="48" fill="#d6ecff" opacity=".25"/>';
+    for (x = 50; x < 1600; x += 140) s += '<path d="M' + x + "," + (B - 48) + " V" + B + '" stroke="#fff" stroke-opacity=".35" stroke-width="2"/>';
+    s += '<rect x="0" y="' + B + '" width="1600" height="7" fill="#26346e"/>' +
+      '<rect x="0" y="' + (B + 7) + '" width="1600" height="26" fill="#f5f7fb"/><rect x="0" y="' + (B + 28) + '" width="1600" height="5" fill="#f2b83f"/>';
+    // the ice: the centre line coming toward us, the two blue lines, the circles, old tracings, and sunny patches
+    s += '<rect x="0" y="' + I + '" width="1600" height="' + (1000 - I) + '" fill="url(#crIce)"/>' +
+      '<g fill="none" opacity=".5"><path d="M800,' + I + ' V1000" stroke="#e0457a" stroke-width="7"/>' +
+      '<path d="M540,' + I + " L380,1000 M1060," + I + ' L1220,1000" stroke="#5b8be0" stroke-width="7"/>' +
+      '<ellipse cx="800" cy="560" rx="230" ry="62" stroke="#5b8be0" stroke-width="4"/>' +
+      '<ellipse cx="210" cy="440" rx="115" ry="30" stroke="#e0457a" stroke-width="4"/><ellipse cx="1390" cy="440" rx="115" ry="30" stroke="#e0457a" stroke-width="4"/></g>' +
+      '<g fill="#e0457a" opacity=".5"><ellipse cx="210" cy="440" rx="8" ry="3"/><ellipse cx="1390" cy="440" rx="8" ry="3"/></g>' +
+      '<g fill="none" stroke="#b9c8dc" stroke-width="2" opacity=".55"><path d="M120,600 Q360,540 620,590"/><path d="M960,420 Q1180,380 1440,430"/><path d="M380,720 Q620,660 880,712"/><path d="M1100,650 Q1300,610 1520,660"/></g>' +
+      '<g fill="#fff" opacity=".3"><path d="M150,' + I + " L330," + I + ' L230,790 L-20,790 Z"/><path d="M880,' + I + " L1040," + I + ' L980,790 L760,790 Z"/><path d="M1350,' + I + " L1500," + I + ' L1500,790 L1300,790 Z"/></g>';
+    // three skaters: far off gliding right, in the middle gliding left, near gliding right
+    return s +
+      '<g class="rink-skater far"><g transform="translate(260,420) scale(.62)">' + skaterOnIce("#7be3ff", "#f1c7a5") + "</g></g>" +
+      '<g class="rink-skater mid"><g transform="translate(1390,560) scale(-.85,.85)">' + skaterOnIce("#f2b83f", "#e3b08a") + "</g></g>" +
+      '<g class="rink-skater near"><g transform="translate(980,730) scale(1.05)">' + skaterOnIce("#e0457a", "#8d5a3c") + "</g></g>";
+  }
+
+  // A rolling skate bag in the shop's purple, standing on the floor with its handle up; x, y is its bottom left corner.
+  function skateBag(x, y) {
+    return '<g transform="translate(' + x + "," + (y - 120) + ')">' +
+      '<path d="M30,0 V-64 M62,0 V-64" stroke="#9aa3b8" stroke-width="6"/><rect x="22" y="-74" width="48" height="14" rx="6" fill="#3a2a40"/>' +
+      '<rect x="0" y="0" width="92" height="110" rx="18" fill="#6b4aa8"/><rect x="8" y="14" width="76" height="40" rx="10" fill="#8f6bd6"/>' +
+      '<path d="M14,34 H78" stroke="#f3ebff" stroke-width="3" stroke-dasharray="4 4"/>' +
+      '<path d="M46,64 l5,10 11,1 -8,7 2,11 -10,-6 -10,6 2,-11 -8,-7 11,-1 Z" fill="#7be3ff" opacity=".85"/>' +
+      '<circle cx="18" cy="112" r="9" fill="#1d1420"/><circle cx="74" cy="112" r="9" fill="#1d1420"/></g>';
+  }
+
+  // The studio: warm plaster walls with three wide arches looking down on the rink, each softly lit round its edge, dome
+  // lamps between them, a little olive tree, a skate bag, and a wooden floor with the sun on it.
+  function coachRoomSVG() {
+    var arches = [250, 800, 1350];
+    var arch = function (cx) { return "M" + (cx - 220) + ",790 V310 A220,220 0 0 1 " + (cx + 220) + ",310 V790 Z"; };
+    var leaves = [[120, 600], [146, 588], [104, 624], [158, 620], [132, 570], [96, 592], [170, 596], [140, 640]];
+    return "<defs>" +
+        '<clipPath id="crRink">' + arches.map(function (cx) { return '<path d="' + arch(cx) + '"/>'; }).join("") + "</clipPath>" +
+        '<linearGradient id="crIce" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#dbe9f6"/><stop offset=".55" stop-color="#f4f9ff"/><stop offset="1" stop-color="#ffffff"/></linearGradient>' +
+        '<radialGradient id="crDome" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#ffe2a8" stop-opacity=".7"/><stop offset="1" stop-color="#ffe2a8" stop-opacity="0"/></radialGradient>' +
+        '<filter id="crArch" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="7"/></filter>' +
+      "</defs>" +
+      '<rect width="1600" height="1000" fill="#e8d8c3"/>' +
+      '<g fill="#f3e7d6" opacity=".55"><ellipse cx="525" cy="200" rx="60" ry="120"/><ellipse cx="1075" cy="520" rx="50" ry="140"/><ellipse cx="90" cy="880" rx="180" ry="70"/></g>' +
+      '<g clip-path="url(#crRink)">' + rinkView() +
+        '<g fill="#fff" opacity=".16">' + arches.map(function (cx) { return '<path d="M' + (cx - 150) + ",90 L" + (cx - 90) + ",90 L" + (cx - 200) + ",790 L" + (cx - 260) + ',790 Z"/>'; }).join("") + "</g>" +
+      "</g>" +
+      arches.map(function (cx) {
+        return '<path d="' + arch(cx) + '" fill="none" stroke="#ffcf8a" stroke-width="16" opacity=".75" filter="url(#crArch)"/>' +
+          '<path d="' + arch(cx) + '" fill="none" stroke="#f7e6cc" stroke-width="5"/>';
+      }).join("") +
+      [525, 1075].map(function (x) {
+        return '<circle cx="' + x + '" cy="150" r="150" fill="url(#crDome)"/><path d="M' + x + ',0 V96" stroke="#3a2a20" stroke-width="3"/>' +
+          '<path d="M' + (x - 46) + ",140 Q" + (x - 46) + ",96 " + x + ",96 Q" + (x + 46) + ",96 " + (x + 46) + ',140 Z" fill="#6b4a2c"/>' +
+          '<ellipse cx="' + x + '" cy="140" rx="46" ry="8" fill="#ffe7b5"/>';
+      }).join("") +
+      '<path d="M132,724 Q126,672 136,622" stroke="#6b4a2c" stroke-width="7" fill="none" stroke-linecap="round"/>' +
+      '<g fill="#7f9a6a">' + leaves.map(function (l, n) { return '<ellipse cx="' + l[0] + '" cy="' + l[1] + '" rx="9" ry="20" transform="rotate(' + (n * 47 % 180 - 90) + " " + l[0] + " " + l[1] + ')"/>'; }).join("") + "</g>" +
+      // the wooden floor: its boards run toward the window, and the sun through the arches lies on it
+      '<rect x="0" y="790" width="1600" height="210" fill="#d2b086"/>' +
+      arches.map(function (cx) { return '<path d="M' + (cx - 200) + ",794 H" + (cx + 200) + " L" + (cx + 330) + ",1000 H" + (cx - 140) + ' Z" fill="#fff1d6" opacity=".38"/>'; }).join("") +
+      (function () {
+        var b = "";
+        for (var n = -15; n <= 15; n++) b += "M" + (800 + n * 62) + ",790 L" + (800 + n * 124) + ",1000 ";
+        return '<path d="' + b + '" stroke="#bb956b" stroke-width="2"/>';
+      })() +
+      '<rect x="0" y="782" width="1600" height="12" fill="#d8c4a8"/><rect x="0" y="792" width="1600" height="3" fill="#b8956c" opacity=".6"/>' +
+      '<path d="M84,720 H184 L172,792 H96 Z" fill="#efe5d6"/><ellipse cx="134" cy="794" rx="52" ry="6" fill="#7a5a3a" opacity=".25"/>' +
+      skateBag(440, 900);
+  }
+
+  function coachInteriorHTML(a, i) {
+    var p = PALETTE[i % PALETTE.length], done = a.status === "done";
+    var say = done ? "Welcome to the coaches' room! Everything about this one is on the board." : "Welcome! This one is still an idea. Here's the plan.";
+    return '<div class="int-wall coach-room" style="--wall:' + p.wall + ";--neon:" + p.neon + ";--awn:" + p.awn + '">' +
+      '<svg class="int-decor" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" aria-hidden="true">' + coachRoomSVG() + "</svg>" +
+      '<button type="button" class="int-back" id="intBack"><span aria-hidden="true">&larr;</span> Back to the village</button>' +
+      cardBoardHTML(a) +
+      '<div class="keeper"><p class="keeper-say">' + say + "</p>" + coachSVG(i) + "</div>" +
     "</div>";
   }
 
@@ -4255,7 +4405,7 @@
     var s = SHOPS[i];
     if (!s || shopState.busy || shopState.open === i) return;
     var box = $("interior");
-    box.innerHTML = s.fit ? fitInteriorHTML(s) : interiorHTML(s.a, s.ai);
+    box.innerHTML = s.fit ? fitInteriorHTML(s) : s.a.art === "coach" ? coachInteriorHTML(s.a, s.ai) : interiorHTML(s.a, s.ai);
     if (s.fit) safely("board tabs", function () { wireTabs(box, tab || "about"); });
     $("intBack").addEventListener("click", function () { leaveShop(true); });
     shopState.open = i;
