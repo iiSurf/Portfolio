@@ -373,3 +373,21 @@ What I asked the AI for, what changed, and what I decided. Newest entries go at 
 ### Checked
 
 - On a local server at 390 wide: the card opens, shows the new wording, the old wording is gone, and there are no console errors.
+
+---
+
+## 2026-10-23 · Artifact 3 card: MySkate Coach
+
+### What I asked for
+
+- Replace the Artifact 3 placeholder with the finished artifact: its title, a link, and a short reflection.
+
+### What changed
+
+- The Artifact 3 entry in `cards.js` is now done: "MySkate Coach", linking to the repository (`https://github.com/iiSurf/MySkate-Coach`, button "Open the repo"), with a reflection on how it works (Claude plans the next session from a MySkate backup, plain code checks every part, one retry, then MySkate's own suggestion), that it runs on Claude Code with my school sign-in and only inside my workspace folder, and what I learned. The picture is still the coach.
+- The stylesheet and scripts are at `?v=20261023`, so a visitor's cached copy of the old card is not used.
+
+### Checked
+
+- On a local server at 390 and 1280 wide: the Artifact 3 shop opens, the card shows the title, the button, and the whole reflection (it scrolls in its box, like the other cards), the button opens the repository in a new tab, nothing scrolls sideways, and there are no console errors. At 1280 the shop matches the Artifact 2 shop.
+- Not checked: the link itself, because the repository is not on GitHub yet. It has to be created and pushed before this card goes live, or the button leads to a missing page.
