@@ -417,4 +417,5 @@ What I asked the AI for, what changed, and what I decided. Newest entries go at 
 - On a local server (MySkate's no-cache server) at 320 by 568, 390 by 844, 768 by 1024, 844 by 390 (a phone held sideways), 1280 by 800, and 1920 by 1080: the room opens, nothing scrolls sideways, the coach is in view and clear of the board, and on a desktop the bubble does not cover the board. No console errors.
 - With every animation stopped (as reduced motion does): all three skaters are in view.
 - The way back to the village works, Artifact 4's shop still has its counter and shopkeeper, and the About shop still has the fitting room. At 320 by 568 the board hides its top line, the same as every other shop already does on short screens.
-- Not checked: a real phone, Safari, Firefox, and the live site (not pushed yet).
+- Live, after the push and GitHub Pages publishing it: https://iisurf.github.io/Portfolio/ loads the `?v=20261023b` files, and at 390 and 1280 wide the Artifact 3 shop opens into the coaches' room with all three skaters, the coach in view (below the board on the phone, at the window with the bubble clear of the board on the desktop), "Open the repo" going to the MySkate Coach repository in a new tab, nothing scrolling sideways, and no console errors.
+- Not checked: a real phone, Safari, or Firefox.
