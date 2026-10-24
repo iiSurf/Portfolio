@@ -419,3 +419,20 @@ What I asked the AI for, what changed, and what I decided. Newest entries go at 
 - The way back to the village works, Artifact 4's shop still has its counter and shopkeeper, and the About shop still has the fitting room. At 320 by 568 the board hides its top line, the same as every other shop already does on short screens.
 - Live, after the push and GitHub Pages publishing it: https://iisurf.github.io/Portfolio/ loads the `?v=20261023b` files, and at 390 and 1280 wide the Artifact 3 shop opens into the coaches' room with all three skaters, the coach in view (below the board on the phone, at the window with the bubble clear of the board on the desktop), "Open the repo" going to the MySkate Coach repository in a new tab, nothing scrolling sideways, and no console errors.
 - Not checked: a real phone, Safari, or Firefox.
+
+---
+
+## 2026-10-24 · Artifact 3 card: open the app
+
+### What I asked for
+
+- The card's button opened the GitHub repository. Artifact 3 has to be an app that can be shown and demoed, so the button should open the app's demo.
+
+### What changed
+
+- MySkate Coach now has an app: `npm run app` runs it live on my Mac, and the same page on GitHub Pages plays back real recorded runs, labelled as a recording. The card's link is https://iisurf.github.io/MySkate-Coach/ ("Open the app"), and the reflection says how the app works and why the public link is a demo (Claude runs on my Mac through Claude Code, never a paid API key).
+- The stylesheet and scripts are at `?v=20261024`.
+
+### Checked
+
+- `cards.js` loads, and the card reads as above. Not checked yet: the link, which works once GitHub Pages is on for the MySkate-Coach repository and it is pushed.

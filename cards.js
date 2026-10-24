@@ -148,15 +148,16 @@ window.ARTIFACTS = [
     number: 3,
     status: "done",
     title: "MySkate Coach",
-    link: "https://github.com/iiSurf/MySkate-Coach",
-    linkLabel: "Open the repo",
+    link: "https://iisurf.github.io/MySkate-Coach/",
+    linkLabel: "Open the app",
     reflection:
-      "A practice coach with AI inside it, for my skating tracker. I save a backup from MySkate and run one command: " +
-      "Claude reads my log and plans my next session, choosing the skills, the minutes for each, and why. " +
+      "A practice coach with AI inside it, for my skating tracker. In the app I pick my MySkate backup, my ice time and the day, " +
+      "and Claude reads my log and plans the session: the skills, the minutes for each, and why. " +
       "Plain code checks every part before I see it (real skills from my list, minutes that fill my ice time, " +
       "and reasons whose numbers come from my own log), gives Claude one retry with the list of problems, " +
-      "and shows MySkate's own suggestion if the plan still fails. It runs on Claude Code with my school sign-in, " +
-      "never a paid API key, and it only works inside my workspace folder. " +
+      "and shows MySkate's own suggestion if the plan still fails. The app shows each step as it happens. " +
+      "Claude runs on my Mac through Claude Code with my school sign-in, never a paid API key, " +
+      "so the link opens a demo that plays back real recorded runs. " +
       "I learned that giving the AI one small job that code can check makes it easy to tell whether a mistake was the model's or mine. " +
       "Every change is in the repo's LOG.md.",
     art: "coach",
