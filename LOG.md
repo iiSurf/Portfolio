@@ -436,3 +436,23 @@ What I asked the AI for, what changed, and what I decided. Newest entries go at 
 ### Checked
 
 - `cards.js` loads, and the card reads as above. Not checked yet: the link, which works once GitHub Pages is on for the MySkate-Coach repository and it is pushed.
+
+---
+
+## 2026-10-30 · Artifact 4 card: the Sunday checkpoint
+
+### What I asked for
+
+- Artifact 4 is due Sunday, November 8. By Sunday, November 1, the card has to show where it is.
+
+### What changed
+
+- The card is now "Articulate". It stays an idea card, because the app is in progress. Its button, "See the plan and drafts", opens the articulate repository on `nicks-branch`, where the team plan, my friend's needs, the theme drafts, and the log are.
+- The text says what the app is, how my teammate and I share one repository, what is done, and what is next.
+- The stylesheet and scripts are at `?v=20261030`.
+
+### Checked
+
+- `cards.js` loads. Opened straight from `#artifact-4` at 390 by 844 and 1280 by 800, the Artifact 4 shop shows the new title, the button, and the text scrolling under them. Nothing scrolls sideways.
+- Not checked: live on GitHub Pages (after the push), a real phone, Safari, or Firefox.
+- The link points at `nicks-branch` because the plan is not merged into `main` yet. Once it is merged, the link can point at the repository itself.

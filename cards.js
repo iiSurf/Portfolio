@@ -165,12 +165,18 @@ window.ARTIFACTS = [
   {
     number: 4,
     status: "idea",
-    title: "English practice app",
-    link: "",
-    linkLabel: "",
+    title: "Articulate",
+    link: "https://github.com/iiSurf/articulate/tree/nicks-branch",
+    linkLabel: "See the plan and drafts",
     reflection:
-      "An English learning app for my friend, so they can practice a little every day in a way that feels friendly and not like homework. " +
-      "I want to build it around what they actually need to say in real life.",
+      "In progress, due November 8, with a teammate. A pronunciation app for a friend who grew up speaking Ukrainian and wants to sound closer to an American accent. " +
+      "They add the words they want to work on, get similar words to practice with them, and pick how to practice: " +
+      "Quiet (puzzles on screen, for the bus), Headphones (listening), or Out loud, where each part of the word turns green, yellow, orange, or red, " +
+      "followed by practice on the part that needs it. " +
+      "Two people and two Claude Code agents share one repo, so we started with a written plan: who owns which files, our own branches, " +
+      "pull requests into main, and a log for each of us. " +
+      "Done so far: the plan, what my friend needs, and drafts of seven Ukrainian color themes to switch between. " +
+      "Next: testing whether a free speech model can grade each sound on a phone, then building.",
     art: "language",
   },
   {
