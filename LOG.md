@@ -456,3 +456,23 @@ What I asked the AI for, what changed, and what I decided. Newest entries go at 
 - `cards.js` loads. Opened straight from `#artifact-4` at 390 by 844 and 1280 by 800, the Artifact 4 shop shows the new title, the button, and the text scrolling under them. Nothing scrolls sideways.
 - Not checked: live on GitHub Pages (after the push), a real phone, Safari, or Firefox.
 - The link points at `nicks-branch` because the plan is not merged into `main` yet. Once it is merged, the link can point at the repository itself.
+
+---
+
+## 2026-10-31 · Artifact 4 card: the link goes to the repository
+
+### What I asked for
+
+- The plan is merged into `main` in the articulate repository now, so the card's button can open the repository itself instead of a branch.
+
+### What changed
+
+- The button, "See the plan and drafts", now opens https://github.com/iiSurf/articulate.
+- The text's progress line now includes the scoring test, which passed: a free speech model running in the browser can grade each sound well enough. Next is building the app.
+- The stylesheet and scripts are at `?v=20261031`.
+
+### Checked
+
+- The previous change, live: after GitHub Pages published it, https://iisurf.github.io/Portfolio/#artifact-4 showed the new card at 390 and 1280 wide, with nothing scrolling sideways.
+- This change: `cards.js` loads, the repository page answers, and the Artifact 4 shop shows the card at 390 by 844 and 1280 by 800, opened straight from `#artifact-4`.
+- Not checked yet: this change live (after the push), a real phone, Safari, or Firefox.
