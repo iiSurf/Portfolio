@@ -170,15 +170,14 @@ window.ARTIFACTS = [
     linkLabel: "Open the app",
     reflection:
       "A pronunciation app, built with a teammate for a friend who grew up speaking Ukrainian and wants to sound closer to an American accent. " +
-      "They add the words they want to work on and choose how to practice: Read (silent puzzles for the bus), Listen (hear a word, pick which one it was), " +
-      "or Speak, where each part of the word turns green, yellow, orange, or red, and the app says what a part sounded like. " +
-      "A free speech model runs inside the browser to grade each sound, so recordings never leave the phone. " +
-      "The app comes in seven Ukrainian color looks, for day and for night. " +
-      "Two people and two Claude Code agents shared one repo, so we wrote a plan first: who owns which files, our own branches, " +
-      "pull requests into main, and a log for each of us. " +
-      "Before building the colors, I tested the speech model on 61 word pairs: it caught 89% of swapped sounds, and I put the weak spots (some vowels) in the app as \"not sure\". " +
+      "They add their own words and practice three ways: Read (silent puzzles for the bus), Listen (hear a word, pick which one it was), or Speak, where each part of the word turns green, yellow, orange, or red. " +
+      "When a part isn't green, a tip starts from a Ukrainian sound they already know. " +
+      "A Progress tab ranks their words (best, needs work, most improved) and starts a five-word round on the sound they miss most. " +
+      "A free speech model runs inside the browser, so recordings never leave the phone. A window explains its 355 MB download first. " +
+      "Two people and two Claude Code agents shared one repo, so we wrote a plan first: who owns which files, and our own branches and logs. " +
+      "Before building the colors I tested the model on 61 word pairs: it caught 89% of swapped sounds, and the weak spots show as \"not sure\". " +
       "I learned that a written plan and clear file ownership let two agents work in one codebase without overwriting each other. " +
-      "Still to do: the first-visit tour, the Ukrainian tips, and testing with real voices. " +
+      "Still to do: my friend hasn't tried it yet, so a Ukrainian speaker needs to check the tips, and it needs testing on a real phone. " +
       "Every change is in the repo's LOG files.",
     art: "language",
   },

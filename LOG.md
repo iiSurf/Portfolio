@@ -579,3 +579,27 @@ What I asked the AI for, what changed, and what I decided. Newest entries go at 
 - **Bindings:** drawn properly now, from the side, with a highback, an ankle strap, and a toe strap. Three hang on a pegboard on the left wall, and a row of seven stands on the long shelf in the middle (the letter board hides it on narrower screens).
 - The beanies moved to a small shelf under the goggles. The wall clock was removed: it only showed as a sliver over the letter board.
 - Checked at 390, 768, 844 by 390, 1280, and 1920: nothing scrolls sideways.
+
+---
+
+## 2026-11-08 · Artifact 4 card: the tour, the download window, and the tips are live
+
+### What I asked for
+
+- The articulate repository got the download window, the resumable download, and the Ukrainian tips (merged into `main`), so the card's last lines were out of date: they said the tour and the tips were still to do.
+
+### What changed
+
+- The reflection now says what is true:
+  - three ways to practice, with the tips that start from a Ukrainian sound;
+  - the speech model runs in the browser, and a window explains its 355 MB download first, which resumes if the connection breaks;
+  - the plan, the scoring test, and what I learned (all kept).
+- It also says what is still to do: my friend hasn't tried the app yet, so a Ukrainian speaker needs to check the tips, and it needs testing on a real phone.
+- It is about 230 words (it also mentions the Progress boards and Say it round, added after the app got them), about as long as before (a first draft with every new detail ran to 315, which was too long for the board).
+- The stylesheet and scripts are at `?v=20261108c`.
+
+### Checked
+
+- The live app first, in a fresh browser at 390 wide: a new visitor sees the welcome, Speak without the model opens the download window with its explanation, Read, Listen, the word page, and Your colors open with no window and no errors, and the tips file loads.
+- The card opened straight from `#artifact-4` at 390 by 844 and 1280 by 800: "★ Open", the new text, and nothing scrolling sideways.
+- Not checked yet: the card live (after the push), a real phone, Safari, or Firefox.
