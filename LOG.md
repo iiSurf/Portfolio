@@ -476,3 +476,23 @@ What I asked the AI for, what changed, and what I decided. Newest entries go at 
 - The previous change, live: after GitHub Pages published it, https://iisurf.github.io/Portfolio/#artifact-4 showed the new card at 390 and 1280 wide, with nothing scrolling sideways.
 - This change: `cards.js` loads, the repository page answers, and the Artifact 4 shop shows the card at 390 by 844 and 1280 by 800, opened straight from `#artifact-4`.
 - Not checked yet: this change live (after the push), a real phone, Safari, or Firefox.
+
+---
+
+## 2026-11-08 · Artifact 4 card: done
+
+### What I asked for
+
+- Artifact 4 is due tonight (November 8). Finish its card: done, with a link that opens something to demo.
+
+### What changed
+
+- The card is now "done". Its button, "Open the app", opens the live app at https://iisurf.github.io/articulate/.
+- The reflection says what the app does, how two people and two Claude Code agents shared one repo, what I tested before building the colors (61 word pairs, 89% of swapped sounds caught), what I learned, and what is still to do (the first-visit tour, the Ukrainian tips, and testing with real voices).
+- The stylesheet and scripts are at `?v=20261108`.
+
+### Checked
+
+- `cards.js` loads, and the app link answers.
+- Opened straight from `#artifact-4` at 390 by 844 and 1280 by 800: the shop shows "Open" with the new title, button, and text scrolling under them.
+- Not checked yet: live on GitHub Pages (after the push), a real phone, Safari, or Firefox.

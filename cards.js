@@ -164,20 +164,22 @@ window.ARTIFACTS = [
   },
   {
     number: 4,
-    status: "idea",
+    status: "done",
     title: "Articulate",
-    link: "https://github.com/iiSurf/articulate",
-    linkLabel: "See the plan and drafts",
+    link: "https://iisurf.github.io/articulate/",
+    linkLabel: "Open the app",
     reflection:
-      "In progress, due November 8, with a teammate. A pronunciation app for a friend who grew up speaking Ukrainian and wants to sound closer to an American accent. " +
-      "They add the words they want to work on, get similar words to practice with them, and pick how to practice: " +
-      "Quiet (puzzles on screen, for the bus), Headphones (listening), or Out loud, where each part of the word turns green, yellow, orange, or red, " +
-      "followed by practice on the part that needs it. " +
-      "Two people and two Claude Code agents share one repo, so we started with a written plan: who owns which files, our own branches, " +
+      "A pronunciation app, built with a teammate for a friend who grew up speaking Ukrainian and wants to sound closer to an American accent. " +
+      "They add the words they want to work on and choose how to practice: Read (silent puzzles for the bus), Listen (hear a word, pick which one it was), " +
+      "or Speak, where each part of the word turns green, yellow, orange, or red, and the app says what a part sounded like. " +
+      "A free speech model runs inside the browser to grade each sound, so recordings never leave the phone. " +
+      "The app comes in seven Ukrainian color looks, for day and for night. " +
+      "Two people and two Claude Code agents shared one repo, so we wrote a plan first: who owns which files, our own branches, " +
       "pull requests into main, and a log for each of us. " +
-      "Done so far: the plan, what my friend needs, drafts of seven Ukrainian color themes to switch between, " +
-      "and a test showing that a free speech model, running in the browser, can grade each sound well enough. " +
-      "Next: building the app.",
+      "Before building the colors, I tested the speech model on 61 word pairs: it caught 89% of swapped sounds, and I put the weak spots (some vowels) in the app as \"not sure\". " +
+      "I learned that a written plan and clear file ownership let two agents work in one codebase without overwriting each other. " +
+      "Still to do: the first-visit tour, the Ukrainian tips, and testing with real voices. " +
+      "Every change is in the repo's LOG files.",
     art: "language",
   },
   {
