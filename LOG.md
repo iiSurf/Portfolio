@@ -496,3 +496,86 @@ What I asked the AI for, what changed, and what I decided. Newest entries go at 
 - `cards.js` loads, and the app link answers.
 - Opened straight from `#artifact-4` at 390 by 844 and 1280 by 800: the shop shows "Open" with the new title, button, and text scrolling under them.
 - Not checked yet: live on GitHub Pages (after the push), a real phone, Safari, or Firefox.
+
+---
+
+## 2026-11-08 · Artifact 4's shop: a snowboard shop
+
+### What I asked for
+
+- Artifact 4's shop inside looked like the standard coffee shop. I asked for a theme of its own, a snowboard shop with a shopkeeper and a customer, like the skate fitting shop in Artifact 1.
+
+### What changed
+
+- Artifact 4 now opens into a snowboard shop (`snowInteriorHTML` in `script.js`, `.snow-room` in `style.css`), built the way the coaches' room was:
+  - pine walls and ceiling beams, with two lamps;
+  - a window onto snowy peaks and pines, with snow falling;
+  - three snowboards on a wall rack, and a shelf of helmets and goggles;
+  - the walls filled in, like the skate shop: a garland of pennants, a wall clock, a rail of three puffy jackets, a shelf of beanies, a pegboard of goggles and mittens on each side, a shelf of bindings, a long shelf of snowboard boots, and a framed mountain poster;
+  - the floor filled in: a rack of six boards standing in slots, a barrel of boards, stacked boot boxes, and a try-on bench with boots, plus a pair of boots on the floor;
+  - a wooden floor with a red rug;
+  - the letter board with the card, as in every shop;
+  - the shopkeeper, in an orange fleece vest with a snowflake badge, next to a customer in a red puffy jacket and earmuffs, holding up a new board.
+- Everything is drawn in code. The snow animation stops with reduced motion, like the other rooms.
+- The shop's front in the village is unchanged.
+- The stylesheet and scripts are at `?v=20261108b`.
+
+### Checked
+
+- At 390 by 844, 768 by 1024, 844 by 390 (a phone held sideways), 1280 by 800, and 1920 by 1000, opened straight from `#artifact-4`: the room shows, nothing scrolls sideways, and the way back is in place.
+- On a computer the speech bubble covers part of the right pegboard. On a phone it's hidden, like in the other rooms.
+- The wall and floor are laid out for a wide screen. On a very wide or very tall screen the picture is cropped a little, like the other rooms, so some items at the edges are cut off.
+- Not checked yet: live on GitHub Pages (after the push), a real phone, Safari, or Firefox.
+
+### Second round: full-size boards and a floor-to-ceiling window
+
+- **The boards are full size next to the people.** They looked like fingerboards beside the people, because each was about 120 units long and a person's head is about 160. Floor boards are now about 300 units (2.5 times bigger), the barrel's boards about 285, and the two boards on the wall about 330. The customer holds a board that stands taller than their head. The people are only drawn from the waist up, so none of this can be fully to scale, but a board now reads as a board.
+- **The window is floor to ceiling** on the right, with a view of a snowy mountain:
+  - a chairlift climbing the slope, with its station, two pylons, and chairs with riders going up and empty chairs coming down;
+  - a line of people waiting to get on, in colored jackets, some with snowboards, along a rope that switches back;
+  - snow falling in front of it all (56 flakes, drifting down);
+  - pine trees in the foreground, and a wide wooden frame with a cross bar.
+- The old small window, the helmet shelf, and the right pegboard are gone to make room for it. Two full-size boards hang on the wall beside it, and the left pegboard is now just a row of goggles, so the standing boards fit under it.
+- **The people changed places:** the shopkeeper is on the left and the customer on the right, so the customer's tall board stands clear of the letter board's text. The speech bubble sits to the left of the shopkeeper, over the open floor.
+- Bug found by looking: my new window function had the same name as the skate shop's window function, so the old one replaced it and the window didn't show. Mine is now `snowShopWindowSVG`.
+- Checked again at 390, 768, 844 by 390, 1280, and 1920: nothing scrolls sideways, and the snow animation stops with reduced motion (the Portfolio's own rule).
+- Not checked: a real phone, Safari, or Firefox. On a phone the letter board hides the window, as in the other rooms.
+
+### Third round: thicker, bigger boards, and muted colors
+
+- **The boards are thicker and bigger.** They looked thin because they had been stretched more in length than in width. Now they are about 75 wide and 330 to 360 long, which is a chunkier, more real board shape.
+  - The floor rack holds five boards (about 410 wide), and the barrel holds three.
+  - Two big boards hang on the wall by the window, and the customer holds a thick one taller than their head.
+  - The floor rack, barrel, and boxes were moved over to make room, and the bench is gone: a pair of boots stands on the boxes instead.
+- **The colors are muted,** with bright highlights only where they help:
+  - Muted base tones: slate blue, sage, stone, clay, charcoal, and cream.
+  - Bright accents: red, blue, orange, and pink, used for stripes on the boards, panels on the jackets, the goggle lenses, the beanie pom-poms, a few bindings and boots, and a few people in the line for the lift.
+  - The pennants, lamp shades, and rug are muted too. The people at the front keep their orange vest and red jacket.
+- The window moved a little right to make room for the wider boards beside it.
+- Checked at 390, 768, 844 by 390, 1280, and 1920: nothing scrolls sideways.
+
+### Fourth round: eleven different snowboard designs
+
+- The shop has 11 snowboards (5 in the floor rack, 3 in the barrel, 2 on the wall, and the one the customer holds), and each now has its own original design, inspired by the pictures iiSurf shared. There are no brand names or logos on any of them.
+  - **Rack:** colored bands with a ring mark, a pale grey board with a dark mountain, a winter forest at sunset, a white board with a panda, and a moon over a red peak with layers of rock.
+  - **Barrel:** a city skyline burst in teal and black, a white board covered in grey doodles, and a jungle with a bird and flowers.
+  - **Wall:** a dark wood-grain board with a swallowtail and an orange line, and a white board with a black-to-red-to-orange spear and a gold arch.
+  - **Customer:** a blue-to-violet gradient with a thin red edge and small orange, pink, and cream marks.
+- Each design is drawn in code (`snowDesign` in `script.js`, replacing the old one-design board). Its colors are muted, with small bright highlights, as asked. One board has a different shape, the swallowtail.
+- The barrel's boards were spread apart so all three designs show.
+- Checked: all 11 boards are on the page at 390, 768, 844 by 390, 1280, and 1920, and nothing scrolls sideways.
+
+### Fifth round: technical outerwear, goggles, helmets, and bindings
+
+- **Jackets and pants match the references** (modern hooded shells, no brands or logos):
+  - a jacket with a blurred black, grey, cream, and orange print, a cream hood, and a black sleeve;
+  - a white jacket with charcoal sleeves, white cuffs, and black corners at the hem;
+  - a black and cream jacket with tan side panels, chest pockets, and red zip pulls;
+  - an all-red jacket;
+  - white cargo pants with a side pocket, and charcoal pants with an orange zip.
+  They hang on two rails on the left wall.
+- **Goggles:** a cylinder-lens style, in three versions on a pegboard on the right wall: a mirror lens fading from red to orange, a dark smoke lens with a red strap and red inner trim, and a white frame with a black lens.
+- **Helmets:** three on a shelf on the left wall, with vents, a visor, and ear pads (cream with a black band, charcoal with orange, and sage with pink).
+- **Bindings:** drawn properly now, from the side, with a highback, an ankle strap, and a toe strap. Three hang on a pegboard on the left wall, and a row of seven stands on the long shelf in the middle (the letter board hides it on narrower screens).
+- The beanies moved to a small shelf under the goggles. The wall clock was removed: it only showed as a sliver over the letter board.
+- Checked at 390, 768, 844 by 390, 1280, and 1920: nothing scrolls sideways.

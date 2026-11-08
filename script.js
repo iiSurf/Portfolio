@@ -3591,6 +3591,397 @@
       skateBag(440, 900);
   }
 
+  /* ====== SNOWBOARD SHOP (Artifact 4's room) ==========================================================
+     A mountain-town snowboard shop: pine walls, boards on the wall, a window onto snowy peaks and pines, a shelf of
+     helmets and goggles, and in front the shopkeeper (an orange fleece vest) with a customer who is trying a new board.
+     Everything is drawn here; the layout is .snow-room in style.css. */
+
+  // The eleven snowboards in the shop, each with its own original design (inspired by real boards, but with no brand names).
+  // snowDesign(name) draws one standing up with its centre at 0,0, 34 wide and 150 long before it is scaled, in muted tones
+  // with a few bright highlights. Names: bands, ridge, forest, panda, moonpeak, city, doodle, jungle, wood, spear, dusk.
+  var snUid = 0;
+  var SB_STD = "M-17,-59 Q-17,-75 0,-75 Q17,-75 17,-59 V59 Q17,75 0,75 Q-17,75 -17,59 Z";
+  var SB_TAIL = "M0,-78 C10,-72 17,-52 17,-20 V42 C17,56 14,66 9,77 L0,60 L-9,77 C-14,66 -17,56 -17,42 V-20 C-17,-52 -10,-72 0,-78 Z";
+  function sbDots(x, y) {
+    var d = "";
+    for (var r = 0; r < 3; r++) for (var c = 0; c < 2; c++) d += "M" + (x - 2.5 + c * 5) + "," + (y + r * 4.5) + "h.1";
+    return '<path d="' + d + '" stroke="#2a2a34" stroke-opacity=".55" stroke-width="2" stroke-linecap="round"/>';
+  }
+  function snowDesign(name) {
+    var id = "sb" + (++snUid), outline = name === "wood" ? SB_TAIL : SB_STD, defs = "", art = "", n, i;
+    function grad(suffix, stops, vertical) {
+      defs += '<linearGradient id="' + id + suffix + '" x1="0" y1="0" x2="' + (vertical === false ? 1 : 0) + '" y2="' + (vertical === false ? 0 : 1) + '">' +
+        stops.map(function (st) { return '<stop offset="' + st[0] + '" stop-color="' + st[1] + '"/>'; }).join("") + "</linearGradient>";
+      return "url(#" + id + suffix + ")";
+    }
+    if (name === "bands") {
+      art = [[-75, -52, "#6f9ec0"], [-52, -30, "#f1ece0"], [-30, -14, "#2b2f3a"], [-14, 8, "#d3a93f"], [8, 30, "#5fa59b"], [30, 56, "#2f3f86"], [56, 76, "#2b2f3a"]]
+        .map(function (b) { return '<rect x="-18" y="' + b[0] + '" width="36" height="' + (b[1] - b[0]) + '" fill="' + b[2] + '"/>'; }).join("") +
+        '<circle cx="-8" cy="-4" r="3.6" fill="none" stroke="#f1ece0" stroke-width="1.4"/>' + sbDots(0, -42) + sbDots(0, 38);
+    } else if (name === "ridge") {
+      art = '<rect x="-18" y="-76" width="36" height="152" fill="#cdd1cf"/><rect x="-11" y="-46" width="5" height="34" rx="2.5" fill="#b3b8b6"/><rect x="6" y="-46" width="5" height="34" rx="2.5" fill="#b3b8b6"/>' +
+        '<path d="M-17,44 L-6,14 L2,26 L17,-6 V76 H-17 Z" fill="#23262c"/><path d="M-17,60 L-2,36 L8,48 L17,32 V76 H-17 Z" fill="#555a62"/>' +
+        '<path d="M-6,14 L-3,20 L-8,19 Z M17,-6 L17,6 L10,4 Z" fill="#f4f4f2"/>' + sbDots(0, -62);
+    } else if (name === "forest") {
+      var sky = grad("s", [[0, "#1d2733"], [0.35, "#3f7783"], [0.68, "#d98c4a"], [1, "#f1be86"]]);
+      art = '<rect x="-18" y="-76" width="36" height="152" fill="' + sky + '"/><circle cx="8" cy="-34" r="7" fill="#f3a15a"/>' +
+        '<path d="M-17,22 L-5,-6 L3,8 L10,-12 L17,12 V34 H-17 Z" fill="#e9eef2"/>';
+      for (i = 0; i < 6; i++) art += '<path d="M' + (-16 + i * 6.4) + ",76 L" + (-12.8 + i * 6.4) + "," + (36 + (i % 3) * 9) + " L" + (-9.6 + i * 6.4) + ',76 Z" fill="#1c3a33"/>';
+      art += '<path d="M-17,76 V58 L17,58 V76Z" fill="#14281f"/>';
+    } else if (name === "panda") {
+      art = '<rect x="-18" y="-76" width="36" height="152" fill="#f4f2ee"/><rect x="-1.5" y="-52" width="3" height="26" rx="1.5" fill="#23252b"/><rect x="-1.5" y="-10" width="3" height="18" rx="1.5" fill="#23252b"/>' +
+        '<circle cx="-9" cy="44" r="5" fill="#23252b"/><circle cx="9" cy="44" r="5" fill="#23252b"/><ellipse cx="0" cy="54" rx="12.5" ry="11" fill="#fff" stroke="#d8d6d1" stroke-width="1"/>' +
+        '<ellipse cx="-5.2" cy="52" rx="3.4" ry="4.4" transform="rotate(20 -5.2 52)" fill="#23252b"/><ellipse cx="5.2" cy="52" rx="3.4" ry="4.4" transform="rotate(-20 5.2 52)" fill="#23252b"/>' +
+        '<circle cx="-5" cy="51.4" r="1" fill="#fff"/><circle cx="5" cy="51.4" r="1" fill="#fff"/><ellipse cx="0" cy="57" rx="2.4" ry="1.7" fill="#23252b"/><path d="M0,58 v2.4 M-2.4,61 q2.4,1.4 4.8,0" stroke="#23252b" stroke-width=".9" fill="none"/>';
+    } else if (name === "moonpeak") {
+      var night = grad("s", [[0, "#2e6b78"], [1, "#2a4a73"]]);
+      art = '<rect x="-18" y="-76" width="36" height="152" fill="' + night + '"/><circle cx="6" cy="-54" r="8" fill="#d9e2da"/><rect x="-18" y="-36" width="36" height="9" fill="#8c6a54"/><rect x="-18" y="-27" width="36" height="22" fill="#3c78a8"/>' +
+        '<path d="M-18,-20 Q0,-14 18,-20 M-18,-14 Q0,-8 18,-14" stroke="#cfe0ee" stroke-opacity=".6" stroke-width=".8" fill="none"/>' +
+        '<path d="M0,-8 L16,26 H-16 Z" fill="#e5603a"/><rect x="-18" y="26" width="36" height="7" fill="#2f5d8a"/><rect x="-18" y="33" width="36" height="7" fill="#8a4a3a"/><rect x="-18" y="40" width="36" height="7" fill="#c9a15a"/>' +
+        '<rect x="-18" y="47" width="36" height="30" fill="#1f2228"/><path d="M-14,76 L-4,54 L3,76 Z" fill="#e5603a"/>' + sbDots(0, 54);
+    } else if (name === "city") {
+      art = '<rect x="-18" y="-76" width="36" height="152" fill="#f6f5f2"/>';
+      for (i = 0; i < 15; i++) {
+        var h = 8 + ((i * 37) % 26), cx = -16 + i * 2.3, col = ["#5aa7ad", "#9aa3a8", "#2b2f3a"][i % 3];
+        art += '<rect x="' + cx.toFixed(1) + '" y="' + (-14 - h) + '" width="2" height="' + (h * 2 + 14) + '" fill="' + col + '"/>';
+      }
+      art += '<rect x="-18" y="-17" width="36" height="3" fill="#f6f5f2"/><rect x="-18" y="58" width="36" height="18" fill="#2b2f3a"/><rect x="-18" y="58" width="36" height="3" fill="#5aa7ad"/>' + sbDots(0, -66);
+    } else if (name === "doodle") {
+      art = '<rect x="-18" y="-76" width="36" height="152" fill="#f2f1ec"/><g fill="none" stroke="#9b9b96" stroke-width="1.1" stroke-linecap="round">' +
+        '<path d="M-10,-56 q6,-8 10,0 t10,0 M-12,-44 q8,-6 12,2 t12,-2 M-6,-30 a6,6 0 1,1 -.1,0 M8,-24 l3,5 l5,-1 l-2,5 l3,4 l-5,0 l-3,4 l-1,-5 l-5,-2 l4,-3 Z M-12,-8 c4,-6 10,-2 6,3 s-8,-1 -2,-6 M6,0 q4,6 8,0 M-8,14 h16 M-10,22 q10,-8 20,0 M-4,34 a4,4 0 1,0 8,0 M-12,46 l6,-6 l6,6 l6,-6 l6,6 M-8,60 q8,-8 16,0"/>' +
+        '<circle cx="12" cy="-48" r="3"/><circle cx="-12" cy="30" r="2.4"/></g><rect x="-9" y="-22" width="7" height="4" fill="#e0813a"/>' + sbDots(0, 62);
+    } else if (name === "jungle") {
+      var air = grad("s", [[0, "#aebfbe"], [0.5, "#dfe4d6"], [1, "#9fb08f"]]);
+      art = '<rect x="-18" y="-76" width="36" height="152" fill="' + air + '"/><rect x="-18" y="-4" width="36" height="80" fill="#1f3a2c"/>';
+      [[-10, 4, 12, 24, -30, "#2d5a3f"], [8, 10, 11, 26, 28, "#4f7a4c"], [-2, 26, 12, 28, 6, "#2d5a3f"], [11, 40, 10, 24, -20, "#4f7a4c"], [-11, 46, 11, 24, 24, "#4f7a4c"], [0, 60, 12, 22, 0, "#14281f"]]
+        .forEach(function (l) { art += '<ellipse cx="' + l[0] + '" cy="' + l[1] + '" rx="' + l[2] + '" ry="' + l[3] + '" transform="rotate(' + l[4] + " " + l[0] + " " + l[1] + ')" fill="' + l[5] + '"/>'; });
+      art += '<circle cx="-6" cy="30" r="5" fill="#c85a4a"/><circle cx="-6" cy="30" r="2" fill="#f0a13a"/><circle cx="9" cy="52" r="4.4" fill="#c85a4a"/><circle cx="9" cy="52" r="1.8" fill="#f0a13a"/>' +
+        '<path d="M-12,-44 q10,-8 22,2 q-6,10 -10,2" stroke="#e87a6a" stroke-width="2.6" fill="none" stroke-linecap="round"/><ellipse cx="-6" cy="-18" rx="3.2" ry="2.2" fill="#3d6fb0"/><ellipse cx="9" cy="8" rx="3" ry="2" fill="#f0a13a"/>';
+    } else if (name === "wood") {
+      art = '<rect x="-18" y="-80" width="36" height="162" fill="#4a3a22"/>';
+      for (i = 0; i < 9; i++) art += '<path d="M' + (-14 + i * 3.6) + ",-78 C" + (-16 + i * 3.6) + ",-30 " + (-11 + i * 3.6) + ",30 " + (-14 + i * 3.6) + ',78" stroke="#6b5532" stroke-width=".8" fill="none"/>';
+      art += '<rect x="-.7" y="-52" width="1.4" height="92" fill="#e07a2a"/>' + sbDots(0, -34) + sbDots(0, 26);
+    } else if (name === "spear") {
+      var blade = grad("s", [[0, "#23252b"], [0.5, "#c0443a"], [1, "#f08a2b"]]), arch = grad("a", [[0, "#f3c46a"], [1, "#f0a13a"]]);
+      art = '<rect x="-18" y="-76" width="36" height="152" fill="#f5f3ee"/><path d="M-1.4,-64 L1.4,-64 L11,38 H-11 Z" fill="' + blade + '"/><rect x="-1.5" y="-30" width="3" height="16" fill="#23252b" opacity=".5"/>' +
+        '<path d="M-18,76 V52 Q0,34 18,52 V76 Z" fill="' + arch + '"/><path d="M-10,-52 v8 M10,-52 v8" stroke="#23252b" stroke-width="1.2"/>';
+    } else {
+      // dusk: a blue to violet gradient, a thin red edge, and a few small marks
+      var dusk = grad("s", [[0, "#3f8fd8"], [1, "#6a4fb2"]]);
+      art = '<rect x="-18" y="-76" width="36" height="152" fill="' + dusk + '"/><rect x="-1" y="-32" width="2" height="22" fill="#14161c"/><rect x="-1" y="22" width="2" height="22" fill="#14161c"/>' +
+        '<rect x="-12" y="-4" width="8" height="3" rx="1.5" fill="#f08a2b"/><rect x="-12" y="1" width="12" height="3" rx="1.5" fill="#e0457a"/><rect x="-12" y="6" width="6" height="3" rx="1.5" fill="#f1ece0"/>';
+    }
+    var sheen = '<path d="M-17,-70 C-12,-30 -12,30 -17,70 H-9 C-4,30 -4,-30 -9,-70 Z" fill="#fff" opacity=".13"/>';
+    var edge = name === "dusk" ? '<path d="' + outline + '" fill="none" stroke="#d6453d" stroke-width="2.4"/>' : "";
+    return "<defs>" + defs + '<clipPath id="' + id + 'c"><path d="' + outline + '"/></clipPath></defs><g clip-path="url(#' + id + 'c)">' + art + sheen + "</g>" + edge +
+      '<path d="' + outline + '" fill="none" stroke="#fff" stroke-opacity=".65" stroke-width="2.2"/>';
+  }
+
+  // ---- the small things that fill the snowboard shop (each is drawn with its own origin at 0,0) ----
+  // Muted tones for the shop (slate, sage, stone, clay, charcoal), and bright accents (red, blue, orange, pink) for small highlights
+  var SN = { teal: "#5f8c88", pink: "#c28a8a", blue: "#5b7a99", gold: "#c9a35c", purple: "#7c7391", red: "#b4574c", ice: "#a9c4d4", wood: "#8a5a30",
+    char: "#3e4452", stone: "#b9ab98", sage: "#7d9a86", clay: "#b7765a", cream: "#e6dcc8" };
+  var ACC = { red: "#d6453d", blue: "#2f6fd0", orange: "#f08a2b", pink: "#e0457a" };
+  // snowboards: a muted base, with a bright stripe and a quiet one
+  function snAt(x, y, inner, extra) { return '<g transform="translate(' + x + "," + y + ")" + (extra || "") + '">' + inner + "</g>"; }
+  // a puffy jacket on a hanger (the hanger hook at 0,0)
+  function snJacket(c1, c2) {
+    return '<path d="M0,0 v-12 q-9,-3 -7,-11" stroke="#3a2a20" stroke-width="3" fill="none"/>' +
+      '<path d="M-26,10 L-50,34 L-46,104 H-30 L-27,56 Z M26,10 L50,34 L46,104 H30 L27,56 Z" fill="' + c1 + '"/>' +
+      '<rect x="-31" y="6" width="62" height="142" rx="15" fill="' + c1 + '"/><rect x="-31" y="72" width="62" height="22" fill="' + c2 + '"/>' +
+      '<path d="M-31,44 H31 M-31,110 H31" stroke="#00000026" stroke-width="3"/><path d="M0,12 V148" stroke="#fff" stroke-opacity=".65" stroke-width="3"/>' +
+      '<path d="M-19,8 Q0,30 19,8" fill="none" stroke="' + c2 + '" stroke-width="9" stroke-linecap="round"/><circle cx="-46" cy="104" r="6" fill="#2a2a34"/><circle cx="46" cy="104" r="6" fill="#2a2a34"/>';
+  }
+  // a woolly beanie standing on a shelf (its brim at 0,0)
+  function snBeanie(c1, c2) {
+    return '<path d="M-26,0 C-28,-44 28,-44 26,0 Z" fill="' + c1 + '"/><rect x="-28" y="-12" width="56" height="12" rx="5" fill="' + c2 + '"/>' +
+      '<path d="M-16,-12 V0 M-8,-12 V0 M0,-12 V0 M8,-12 V0 M16,-12 V0" stroke="#00000022" stroke-width="2"/><circle cx="0" cy="-38" r="8" fill="' + c2 + '"/>';
+  }
+  // goggles with a strap (centre at 0,0)
+  function snGoggles(c, lens) {
+    return '<ellipse cx="0" cy="0" rx="30" ry="14" fill="none" stroke="' + c + '" stroke-width="5" opacity=".9"/>' +
+      '<rect x="-24" y="-12" width="48" height="24" rx="11" fill="' + c + '"/><rect x="-19" y="-8" width="38" height="16" rx="8" fill="' + lens + '"/><path d="M-15,-3 q8,-4 14,-1" stroke="#fff" stroke-opacity=".7" stroke-width="2.4" fill="none" stroke-linecap="round"/>';
+  }
+  // a mitten hung by its loop (loop at 0,0)
+  function snMitten(c1, c2) {
+    return '<path d="M0,0 v8" stroke="#3a2a20" stroke-width="2.5"/><path d="M-12,10 H12 Q18,10 18,18 V44 Q18,56 6,56 H-8 Q-18,56 -18,44 V22 Q-18,10 -12,10 Z" fill="' + c1 + '"/>' +
+      '<path d="M-24,28 Q-24,18 -16,24 Z" fill="' + c1 + '"/><rect x="-18" y="40" width="36" height="12" fill="' + c2 + '"/>';
+  }
+  // a snowboard boot, toe to the right (sole at y 0)
+  function snBoot(c) {
+    return '<path d="M-30,0 V-52 Q-30,-60 -22,-60 H0 Q6,-60 6,-52 V-30 Q30,-26 38,-14 Q42,-6 38,0 Z" fill="' + c + '"/>' +
+      '<rect x="-32" y="-8" width="76" height="9" rx="4" fill="#2a2a34"/><path d="M-4,-52 H10 M0,-44 H14 M4,-36 H18" stroke="#fff" stroke-opacity=".8" stroke-width="3" stroke-linecap="round"/>' +
+      '<path d="M-30,-58 H6" stroke="#ffffff55" stroke-width="5"/>';
+  }
+  // a snowboard binding (top view, centre at 0,0)
+  function snBinding(c) {
+    return '<rect x="-26" y="-12" width="52" height="24" rx="10" fill="#2a2a34"/><rect x="-18" y="-18" width="12" height="36" rx="5" fill="' + c + '"/><rect x="2" y="-16" width="16" height="32" rx="6" fill="' + c + '" opacity=".85"/>';
+  }
+  function snPennants() {
+    var out = '<path d="M0,92 Q200,142 400,92 T800,92 T1200,92 T1600,92" fill="none" stroke="#6b4524" stroke-width="3"/>', cols = [SN.pink, SN.gold, SN.teal, SN.blue, SN.purple];
+    for (var k = 0, x = 24; x < 1600; k++, x += 66) {
+      var y = 92 + 24 * Math.sin(Math.PI * ((x % 400) / 400));
+      out += '<path d="M' + (x - 15) + "," + y.toFixed(1) + " H" + (x + 15) + " L" + x + "," + (y + 36).toFixed(1) + ' Z" fill="' + cols[k % cols.length] + '"/>';
+    }
+    return out;
+  }
+  // ---- technical outerwear and gear (inspired by modern ski and snowboard shells; no brands or logos) ----
+  var snGid = 0;
+  // a hooded jacket on a hanger (the hanger hook at 0,0): kind is smear, white, block, or red
+  function snTechJacket(kind) {
+    var id = "snj" + (++snGid);
+    var TORSO = "M-34,24 Q-34,14 -24,12 L24,12 Q34,14 34,24 V150 H-34 Z";
+    var sleeveR = "M30,22 L58,42 L56,150 L34,150 L30,64 Z", sleeveL = "M-30,22 L-58,42 L-56,150 L-34,150 L-30,64 Z";
+    var hoodBack = "M-30,16 Q-36,-22 0,-26 Q36,-22 30,16 Z", collar = "M-26,16 L-20,-8 Q0,-18 20,-8 L26,16 Q0,28 -26,16 Z";
+    var c = { torso: "#f2f1ed", sl: "#4a4d55", sr: "#4a4d55", hood: "#f2f1ed", cuff: "#f2f1ed" }, over = "";
+    if (kind === "smear") {
+      c = { torso: "#d9d6cf", sl: "#c9c6bf", sr: "#17181c", hood: "#e9e6dd", cuff: "#c9c6bf" };
+      over = '<g clip-path="url(#' + id + 'c)" filter="url(#snBlur)"><rect x="-15" y="8" width="30" height="148" fill="#26282e"/><rect x="-34" y="14" width="14" height="140" fill="#9c9a94" opacity=".8"/>' +
+        '<path d="M-34,44 H34 M-34,84 H34 M-30,122 H34" stroke="#e3874a" stroke-width="9" stroke-linecap="round" opacity=".85"/><path d="M12,28 L34,70 M-34,100 L0,60" stroke="#1c1d22" stroke-width="12" opacity=".7"/></g>';
+    } else if (kind === "block") {
+      c = { torso: "#efe9dc", sl: "#efe9dc", sr: "#efe9dc", hood: "#16171b", cuff: "#cdb89a" };
+      over = '<path d="M-34,24 Q-34,14 -24,12 L24,12 Q34,14 34,24 V78 L12,68 H-12 L-34,78 Z" fill="#16171b"/><rect x="-34" y="80" width="12" height="70" fill="#cdb89a"/><rect x="22" y="80" width="12" height="70" fill="#cdb89a"/>' +
+        '<rect x="-31" y="38" width="22" height="28" rx="3" fill="#24252a" stroke="#3a3b42" stroke-width="1.5"/><rect x="9" y="38" width="22" height="28" rx="3" fill="#24252a" stroke="#3a3b42" stroke-width="1.5"/>' +
+        '<circle cx="-5" cy="24" r="2.4" fill="' + ACC.red + '"/><circle cx="5" cy="24" r="2.4" fill="' + ACC.red + '"/><path d="M-34,78 L-12,68 M34,78 L12,68" stroke="#00000033" stroke-width="2"/>';
+    } else if (kind === "red") {
+      c = { torso: ACC.red, sl: "#c63d35", sr: "#c63d35", hood: "#c63d35", cuff: "#a8322c" };
+      over = '<path d="M-34,96 H34" stroke="#00000030" stroke-width="3"/><path d="M-24,36 V70" stroke="#00000055" stroke-width="3" stroke-linecap="round"/><rect x="40" y="70" width="8" height="8" fill="#14161c" transform="rotate(8 44 74)"/>';
+    } else {
+      over = '<path d="M-34,120 L-34,150 H-14 Z M34,120 L34,150 H14 Z" fill="#2e3036"/><path d="M-34,96 H34" stroke="#00000018" stroke-width="3"/><circle cx="-18" cy="100" r="2.4" fill="#2e3036"/>';
+    }
+    return '<defs><clipPath id="' + id + 'c"><path d="' + TORSO + '"/></clipPath></defs>' +
+      '<path d="M0,0 v-14 q-9,-3 -7,-11" stroke="#3a2a20" stroke-width="3" fill="none"/>' +
+      '<path d="' + hoodBack + '" fill="' + c.hood + '"/><path d="' + hoodBack + '" fill="#000" opacity=".12"/>' +
+      '<path d="' + sleeveL + '" fill="' + c.sl + '"/><path d="' + sleeveR + '" fill="' + c.sr + '"/>' +
+      '<rect x="-57" y="128" width="23" height="22" rx="3" fill="' + c.cuff + '"/><rect x="34" y="128" width="23" height="22" rx="3" fill="' + c.cuff + '"/>' +
+      '<path d="' + TORSO + '" fill="' + c.torso + '"/>' + over +
+      '<path d="' + collar + '" fill="' + c.hood + '"/><path d="M0,22 V150" stroke="#000" stroke-opacity=".4" stroke-width="2"/><path d="M-20,-6 Q0,2 20,-6" stroke="#00000030" stroke-width="2" fill="none"/>' +
+      '<path d="M-34,150 H34" stroke="#00000030" stroke-width="3"/>';
+  }
+  // cargo snow pants on a clip hanger (the hanger at 0,0): kind is white or charcoal
+  function snPants(kind) {
+    var white = kind === "white", base = white ? "#f0eee9" : "#3a3d45", pocket = white ? "#dcd8cf" : "#2f3239";
+    return '<path d="M0,-2 v-12 q-9,-3 -7,-11" stroke="#3a2a20" stroke-width="3" fill="none"/><rect x="-10" y="-4" width="20" height="8" rx="2" fill="#3a2a20"/>' +
+      '<path d="M-36,8 H36 L40,190 H8 L0,74 L-8,190 H-40 Z" fill="' + base + '"/><rect x="-36" y="2" width="72" height="14" rx="3" fill="' + (white ? "#e4e1da" : "#2c2f36") + '"/>' +
+      '<rect x="12" y="76" width="24" height="36" rx="3" fill="' + pocket + '"/><path d="M12,86 H36" stroke="#00000025" stroke-width="2"/>' +
+      '<path d="M-4,18 V74" stroke="#00000022" stroke-width="2"/><path d="M-40,176 H-8 M8,176 H40" stroke="#00000022" stroke-width="3"/>' +
+      (white ? '<path d="M-24,38 q8,-6 16,0" stroke="#14161c" stroke-width="2" fill="none"/>' : '<path d="M-26,60 V104" stroke="' + ACC.orange + '" stroke-width="3" stroke-linecap="round"/>');
+  }
+  // goggles with a cylinder lens (centre at 0,0, about 104 wide): mirror (a red to orange lens), smoke (dark lens, red strap), or white
+  function snGoggles2(kind) {
+    var id = "sng" + (++snGid), mirror = kind === "mirror", smoke = kind === "smoke";
+    var strap = smoke ? ACC.red : "#f1efe9", frame = smoke ? "#2b2d33" : "#f1efe9", lens = mirror ? "url(#" + id + ")" : smoke ? "#4a4d55" : "#1f2126";
+    return (mirror ? '<defs><linearGradient id="' + id + '" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#e8962e"/><stop offset=".45" stop-color="#d6453d"/><stop offset=".75" stop-color="#e0457a"/><stop offset="1" stop-color="#ef7a2e"/></linearGradient></defs>' : "") +
+      '<rect x="-56" y="-9" width="16" height="18" rx="3" fill="' + strap + '"/><rect x="40" y="-9" width="16" height="18" rx="3" fill="' + strap + '"/><path d="M-52,-3 h8 M44,-3 h8" stroke="#14161c" stroke-width="1.6" opacity=".6"/>' +
+      '<path d="M-42,-18 Q0,-27 42,-18 Q48,-16 47,-5 L42,13 Q31,24 19,17 L12,10 H-12 L-19,17 Q-31,24 -42,13 L-47,-5 Q-48,-16 -42,-18 Z" fill="' + frame + '" stroke="#00000022" stroke-width="1.4"/>' +
+      '<path d="M-39,-15 Q0,-23 39,-15 Q43,-13 42,-5 L38,9 Q29,17 20,12 L12,6 H-12 L-20,12 Q-29,17 -38,9 L-42,-5 Q-43,-13 -39,-15 Z" fill="' + lens + '"/>' +
+      '<path d="M-30,-14 Q-10,-18 16,-16" stroke="#fff" stroke-opacity=".4" stroke-width="3.4" fill="none" stroke-linecap="round"/>' +
+      (smoke ? '<path d="M-19,17 L-12,10 H12 L19,17" stroke="' + ACC.red + '" stroke-width="2.4" fill="none"/>' : "");
+  }
+  // a helmet (sits on its rim at 0,0, about 76 wide and 58 tall)
+  function snHelmet(c1, c2) {
+    return '<path d="M-38,0 C-40,-52 40,-52 38,0 Z" fill="' + c1 + '"/><path d="M-38,-20 Q0,-33 38,-20 L38,-13 Q0,-26 -38,-13 Z" fill="' + c2 + '"/>' +
+      '<rect x="-11" y="-46" width="6" height="12" rx="3" fill="#00000040"/><rect x="-2" y="-47" width="6" height="12" rx="3" fill="#00000040"/><rect x="7" y="-46" width="6" height="12" rx="3" fill="#00000040"/>' +
+      '<path d="M-37,-4 Q0,3 37,-4 L41,3 Q0,12 -41,3 Z" fill="#2a2a34"/><path d="M-38,0 H-26 V15 Q-33,17 -38,11 Z M38,0 H26 V15 Q33,17 38,11 Z" fill="#2a2a34"/>' +
+      '<path d="M-28,-30 Q-14,-42 0,-42" stroke="#fff" stroke-opacity=".4" stroke-width="3" fill="none" stroke-linecap="round"/>';
+  }
+  // a snowboard binding from the side (base at 0,0, toe to the right, about 66 wide and 70 tall): highback, ankle strap, toe strap
+  function snBinding2(strap) {
+    return '<rect x="-32" y="-9" width="66" height="10" rx="4" fill="#2a2a34"/><path d="M-32,-9 L-28,-64 Q-15,-72 -2,-64 L3,-9 Z" fill="#3a3d45"/><path d="M-24,-56 H-6" stroke="#fff" stroke-opacity=".35" stroke-width="2.4" stroke-linecap="round"/>' +
+      '<path d="M3,-9 L3,-34 Q18,-44 32,-30 L34,-9 Z" fill="#4a4e57"/><path d="M-1,-33 Q16,-46 33,-30" stroke="' + strap + '" stroke-width="8" fill="none" stroke-linecap="round"/><rect x="17" y="-44" width="9" height="10" rx="2" fill="#d9d6cf" transform="rotate(-24 21 -39)"/>' +
+      '<path d="M20,-9 Q28,-26 36,-9" stroke="' + strap + '" stroke-width="7" fill="none" stroke-linecap="round"/>';
+  }
+
+  // everything on the wall besides the window
+  function snowWallExtras() {
+    var out = snPennants();
+    // two rails of outerwear on the left: three hooded jackets, then a red one and two pairs of pants
+    out += '<rect x="30" y="140" width="300" height="10" rx="5" fill="' + SN.wood + '"/>' +
+      snAt(76, 152, snTechJacket("smear"), " scale(.86)") + snAt(178, 152, snTechJacket("white"), " scale(.86)") + snAt(280, 152, snTechJacket("block"), " scale(.86)");
+    out += '<rect x="30" y="316" width="300" height="10" rx="5" fill="' + SN.wood + '"/>' +
+      snAt(76, 328, snTechJacket("red"), " scale(.86)") + snAt(186, 328, snPants("white"), " scale(.74)") + snAt(272, 328, snPants("charcoal"), " scale(.74)");
+    // a shelf of helmets
+    out += '<rect x="30" y="528" width="300" height="10" rx="4" fill="' + SN.wood + '"/><path d="M52,538 v18 M308,538 v18" stroke="#6b4524" stroke-width="5"/>' +
+      snAt(80, 528, snHelmet("#e9e4d8", "#16171b"), " scale(.9)") + snAt(172, 528, snHelmet(SN.char, ACC.orange), " scale(.9)") + snAt(262, 528, snHelmet(SN.sage, ACC.pink), " scale(.9)");
+    // a pegboard of bindings, under the helmets
+    var holes = "";
+    for (var gx = 50; gx <= 310; gx += 25) for (var gy = 566; gy <= 634; gy += 17) holes += '<circle cx="' + gx + '" cy="' + gy + '" r="1.8"/>';
+    out += '<rect x="30" y="552" width="300" height="88" rx="10" fill="#b98a52" stroke="#8a5a30" stroke-width="5"/><g fill="#6b4524">' + holes + "</g>" +
+      snAt(90, 632, snBinding2(ACC.red), " scale(.8)") + snAt(184, 632, snBinding2(ACC.blue), " scale(.8)") + snAt(276, 632, snBinding2(ACC.orange), " scale(.8)");
+    // a shelf of bindings across the middle (partly behind the letter board) and a long shelf of boots under it
+    out += '<rect x="340" y="650" width="720" height="10" rx="4" fill="' + SN.wood + '"/>';
+    [ACC.red, SN.stone, ACC.orange, SN.stone, ACC.blue, SN.stone, ACC.pink].forEach(function (c, n) { out += snAt(390 + n * 100, 650, snBinding2(c), " scale(.9)"); });
+    out += '<rect x="340" y="742" width="720" height="12" rx="4" fill="' + SN.wood + '"/><path d="M360,754 v26 M1040,754 v26" stroke="#6b4524" stroke-width="5"/>';
+    [SN.char, SN.stone, ACC.red, SN.blue, SN.clay, SN.sage].forEach(function (c, n) { out += snAt(400 + n * 110, 742, snBoot(c), n % 2 ? "" : " scale(-1,1)"); });
+    // two big boards on wall brackets, beside the window
+    out += '<rect x="1056" y="196" width="150" height="9" rx="4" fill="#6b4524"/><rect x="1056" y="410" width="150" height="9" rx="4" fill="#6b4524"/>' +
+      snAt(1092, 300, snowDesign("wood"), " rotate(-1.5) scale(2.05,2.4)") + snAt(1166, 300, snowDesign("spear"), " rotate(1.5) scale(2.05,2.4)");
+    // under them: a pegboard of goggles, and a shelf of beanies
+    var h2 = "";
+    for (var hx = 1076; hx <= 1190; hx += 19) for (var hy = 514; hy <= 640; hy += 21) h2 += '<circle cx="' + hx + '" cy="' + hy + '" r="1.6"/>';
+    out += '<rect x="1060" y="494" width="146" height="164" rx="10" fill="#b98a52" stroke="#8a5a30" stroke-width="5"/><g fill="#6b4524">' + h2 + "</g>" +
+      snAt(1133, 534, snGoggles2("mirror"), " scale(.66)") + snAt(1133, 580, snGoggles2("smoke"), " scale(.66)") + snAt(1133, 626, snGoggles2("white"), " scale(.66)");
+    out += '<rect x="1060" y="738" width="146" height="9" rx="4" fill="' + SN.wood + '"/>' +
+      [[1088, SN.stone, SN.blue], [1133, SN.clay, SN.cream], [1178, SN.char, ACC.pink]].map(function (b) { return snAt(b[0], 738, snBeanie(b[1], b[2]), " scale(.85)"); }).join("");
+    return out;
+  }
+  // everything on the floor: a rack of boards, a barrel of boards, boot boxes, and a try-on pair of boots
+  function snowFloorExtras() {
+    var out = "";
+    // a floor rack of five thick boards, each about as tall as a person's head and shoulders
+    out += '<rect x="26" y="968" width="410" height="22" rx="5" fill="#6b4524"/><path d="M34,780 v188 M428,780 v188" stroke="#6b4524" stroke-width="9"/><rect x="26" y="776" width="410" height="10" rx="4" fill="#8a5a30"/>';
+    ["bands", "ridge", "forest", "panda", "moonpeak"].forEach(function (d, n) { out += snAt(74 + n * 74, 812, snowDesign(d), " rotate(" + (n % 2 ? 2 : -2) + ") scale(2.3,2.4)"); });
+    out += '<rect x="26" y="900" width="410" height="12" rx="4" fill="#8a5a30"/>';
+    // a barrel with three more boards in it
+    out += snAt(540, 900, [-11, 0, 10].map(function (a, k) { return snAt(k * 56 - 56, -150, snowDesign(["city", "doodle", "jungle"][k]), " rotate(" + a + ") scale(2.1,2.3)"); }).join("") +
+      '<path d="M-64,-6 H64 L70,100 Q0,118 -70,100 Z" fill="#a8794a"/><ellipse cx="0" cy="-6" rx="64" ry="13" fill="#6b4524"/><path d="M-66,28 Q0,43 66,28 M-68,68 Q0,83 68,68" stroke="#5c3e24" stroke-width="7" fill="none"/><path d="M-32,0 L-36,104 M0,4 V112 M32,0 L36,104" stroke="#8a5a30" stroke-width="2"/>');
+    // boot boxes stacked, with a pair of boots on top
+    out += '<g transform="translate(640,884)"><rect width="150" height="62" rx="6" fill="' + SN.blue + '"/><rect width="150" height="12" rx="6" fill="#46607a"/><path d="M20,36 h110" stroke="#fff" stroke-width="4" opacity=".6"/></g>' +
+      '<g transform="translate(660,838)"><rect width="110" height="48" rx="6" fill="' + SN.stone + '"/><rect width="110" height="11" rx="6" fill="#8f8372"/><rect x="14" y="26" width="30" height="8" rx="3" fill="' + ACC.red + '"/></g>' +
+      '<g transform="translate(648,944)"><rect width="140" height="50" rx="6" fill="' + SN.clay + '"/><rect width="140" height="11" rx="6" fill="#8f5a42"/><path d="M18,32 h100" stroke="#fff" stroke-width="4" opacity=".6"/></g>' +
+      snAt(700, 838, snBoot(SN.char), " scale(.75)") + snAt(752, 838, snBoot(SN.sage), " scale(.75)");
+    return out;
+  }
+
+  // The big window, floor to ceiling, on the right: a snowy mountain with a chairlift, a line of people waiting to get on
+  // it, and snow falling. Drawn in a box 420 wide and 704 tall (0,0 is the top left of the glass).
+  function snowShopWindowSVG() {
+    var W = 420, H = 704, uid = 0;
+    var cableY = function (x) { return 470 - 0.955 * (x - 80); };
+    // a person in a winter jacket, feet at 0,0, about 62 tall, maybe with a board under the arm
+    function skier(x, y, jacket, hat, board) {
+      return snAt(x, y, (board ? '<rect x="9" y="-60" width="6" height="64" rx="3" fill="' + board + '" transform="rotate(7 12 -28)"/>' : "") +
+        '<rect x="-7" y="-30" width="6" height="30" rx="3" fill="#33384a"/><rect x="1" y="-30" width="6" height="30" rx="3" fill="#33384a"/>' +
+        '<rect x="-11" y="-52" width="22" height="30" rx="9" fill="' + jacket + '"/><circle cx="0" cy="-60" r="9" fill="#f1c7a5"/><path d="M-9,-62 Q0,-78 9,-62 Z" fill="' + hat + '"/>');
+    }
+    // a chair hanging from the cable at x (the cable is at cableY(x)), with riders or empty
+    function chair(x, y, riders) {
+      var out = '<path d="M' + x + "," + y + ' v26" stroke="#3a3a46" stroke-width="2.5"/><rect x="' + (x - 17) + '" y="' + (y + 22) + '" width="34" height="5" rx="2" fill="#b64a3a"/><rect x="' + (x - 17) + '" y="' + (y + 8) + '" width="5" height="19" rx="2" fill="#b64a3a"/>';
+      (riders || []).forEach(function (c, n) {
+        var cx = x - 4 + n * 15;
+        out += '<rect x="' + (cx - 5) + '" y="' + (y + 28) + '" width="9" height="16" rx="3" fill="#33384a"/><rect x="' + (cx - 7) + '" y="' + (y + 8) + '" width="15" height="20" rx="6" fill="' + c + '"/>' +
+          '<circle cx="' + cx + '" cy="' + (y + 2) + '" r="7" fill="#f1c7a5"/><path d="M' + (cx - 7) + "," + (y) + " Q" + cx + "," + (y - 14) + " " + (cx + 7) + "," + (y) + ' Z" fill="#fff1b8"/>';
+      });
+      return out;
+    }
+    function pylon(x) {
+      var top = cableY(x) - 6, ground = 560 - (x * 0.16);
+      return '<path d="M' + (x - 4) + "," + top + " L" + (x + 4) + "," + top + " L" + (x + 12) + "," + ground + " L" + (x - 12) + "," + ground + ' Z" fill="#59606f"/><rect x="' + (x - 17) + '" y="' + (top - 2) + '" width="34" height="6" rx="3" fill="#59606f"/>' +
+        '<circle cx="' + (x - 10) + '" cy="' + (top + 1) + '" r="4" fill="#2e3340"/><circle cx="' + (x + 10) + '" cy="' + (top + 1) + '" r="4" fill="#2e3340"/>';
+    }
+    function pine(x, y, k) {
+      return snAt(x, y, '<rect x="-5" y="46" width="10" height="30" fill="#6b4a2c"/><path d="M0,-86 L32,-24 H14 L42,22 H16 L46,66 H-46 L-16,22 H-42 L-14,-24 H-32 Z" fill="#2f6b4f"/><path d="M0,-86 L20,-48 H8 L-8,-48 H-20 Z M-14,-24 L14,-24 L26,-6 H-26 Z" fill="#f4f9ff"/>', " scale(" + k + ")");
+    }
+    var queue = "", jackets = [ACC.red, SN.blue, SN.stone, ACC.orange, SN.char, SN.sage], boards = [SN.blue, null, SN.clay, SN.char, null, SN.stone];
+    // the line: along the top, then back along the bottom behind a rope
+    for (var a = 0; a < 6; a++) queue += skier(112 + a * 30, 606, jackets[a], jackets[(a + 3) % 6], boards[a]);
+    for (var b = 0; b < 5; b++) queue += skier(312 - b * 30, 672, jackets[(b + 2) % 6], jackets[(b + 5) % 6], boards[(b + 3) % 6]);
+    var posts = "";
+    [104, 180, 256, 332].forEach(function (px) { posts += '<rect x="' + (px - 2) + '" y="624" width="5" height="26" rx="2" fill="#d6453d"/>'; });
+    var flakes = "";
+    for (var k = 0; k < 56; k++) {
+      var fx = (k * 97 + 23) % W, fy = (k * 173 + 41) % H, fr = 2 + (k % 4) * 0.9;
+      flakes += '<circle cx="' + fx + '" cy="' + fy + '" r="' + fr.toFixed(1) + '" style="animation-duration:' + (5 + (k % 5) * 1.3).toFixed(1) + "s;animation-delay:-" + ((k * 1.7) % 7).toFixed(1) + 's"/>';
+    }
+    var cableUp = "M80," + cableY(80) + " L418," + cableY(418), cableDown = "M80," + (cableY(80) + 18) + " L418," + (cableY(418) + 18);
+    var id = "srWinClip";
+    return '<g transform="translate(1224,74)">' +
+      '<defs><clipPath id="' + id + '"><rect x="0" y="0" width="' + W + '" height="' + H + '"/></clipPath>' +
+        '<linearGradient id="srSky2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a9bbd1"/><stop offset=".55" stop-color="#d4e1ef"/><stop offset="1" stop-color="#f1f7fd"/></linearGradient></defs>' +
+      '<rect x="-16" y="-14" width="' + (W + 32) + '" height="' + (H + 16) + '" rx="14" fill="#8a5a30"/>' +
+      '<g clip-path="url(#' + id + ')">' +
+        '<rect width="' + W + '" height="' + H + '" fill="url(#srSky2)"/>' +
+        // far peaks and a pale second range, with mist between
+        '<path d="M0,330 L80,196 L142,262 L226,110 L318,246 L372,196 L420,262 V560 H0 Z" fill="#c3d2e4"/>' +
+        '<path d="M226,110 L252,160 L232,152 L214,168 L196,154 Z M80,196 L100,226 L84,220 L70,232 Z" fill="#fff"/>' +
+        '<path d="M0,400 L70,320 L130,370 L210,290 L290,360 L360,300 L420,350 V560 H0 Z" fill="#dbe6f2"/>' +
+        '<rect x="0" y="330" width="' + W + '" height="90" fill="#fff" opacity=".35"/>' +
+        // the snowy slope, and the station at the bottom of the lift
+        '<g transform="translate(40,-120)">' +
+        '<path d="M-120,534 L0,522 Q120,502 220,470 T420,380 V' + (H + 240) + ' H-120 Z" fill="#f7fbff"/><path d="M-120,572 L0,560 Q150,540 260,500 T420,430 V' + (H + 240) + ' H-120 Z" fill="#eaf2fa"/>' +
+        pylon(200) + pylon(320) +
+        '<path d="' + cableUp + " " + cableDown + '" stroke="#3a3f4c" stroke-width="2.5" fill="none"/>' +
+        '<path d="M80,' + cableY(80) + " V" + (cableY(80) + 18) + '" stroke="#3a3f4c" stroke-width="2.5"/>' +
+        [[150, [ACC.red, SN.char]], [236, [SN.stone]], [276, []], [352, [SN.sage, ACC.blue]], [392, []]].map(function (c) {
+          return chair(c[0], cableY(c[0]), c[1]);
+        }).join("") +
+        '<g transform="translate(0,18)">' + [[190, []], [300, []], [370, [ACC.orange]]].map(function (c) { return chair(c[0], cableY(c[0]), c[1]); }).join("") + "</g>" +
+        '<rect x="20" y="478" width="104" height="58" rx="4" fill="#b64a3a"/><path d="M10,480 L72,448 L134,480 Z" fill="#6b4524"/><rect x="40" y="498" width="22" height="38" rx="3" fill="#3a2a20"/><rect x="76" y="494" width="32" height="22" rx="3" fill="#ffe7b5" opacity=".9"/>' +
+        '<circle cx="80" cy="' + cableY(80) + '" r="16" fill="#59606f"/><circle cx="80" cy="' + cableY(80) + '" r="5" fill="#2e3340"/>' +
+        '<path d="M98,626 H350 M98,650 H350" stroke="#d6453d" stroke-width="3" opacity=".8"/>' + posts + queue +
+        pine(392, 626, 1.5) + pine(340, 690, 1.05) + pine(-6, 690, 1.3) + "</g>" +
+        '<g class="snow-fall" fill="#fff">' + flakes + "</g></g>" +
+      '<path d="M210,0 V' + H + ' M0,250 H' + W + '" stroke="#8a5a30" stroke-width="12"/>' +
+      '<rect x="-24" y="' + (H - 14) + '" width="' + (W + 48) + '" height="22" rx="6" fill="#a8794a"/></g>';
+  }
+
+  function snowRoomSVG() {
+    var planks = "";
+    for (var x = 0; x <= 1600; x += 100) planks += "M" + x + ",0 V780 ";
+    return "<defs>" +
+        '<linearGradient id="srSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9fd4f5"/><stop offset="1" stop-color="#e8f6ff"/></linearGradient>' +
+        '<filter id="snBlur" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="2.6"/></filter>' +
+        '<radialGradient id="srLamp" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#ffe2a8" stop-opacity=".65"/><stop offset="1" stop-color="#ffe2a8" stop-opacity="0"/></radialGradient>' +
+      "</defs>" +
+      // the pine wall, with its planks, and the ceiling beam
+      '<rect width="1600" height="1000" fill="#d3a56d"/>' +
+      '<path d="' + planks + '" stroke="#b98a52" stroke-width="3"/>' +
+      '<g fill="#e3bb82" opacity=".5"><rect x="200" y="0" width="100" height="780"/><rect x="900" y="0" width="100" height="780"/></g>' +
+      '<rect x="0" y="0" width="1600" height="64" fill="#8a5a30"/><rect x="0" y="60" width="1600" height="8" fill="#6b4524"/>' +
+      '<g stroke="#6b4524" stroke-width="3"><path d="M400,0 V60 M1000,0 V60"/></g>' +
+      // the lamps
+      [[480, 64], [940, 64]].map(function (l) {
+        return '<circle cx="' + l[0] + '" cy="' + (l[1] + 70) + '" r="150" fill="url(#srLamp)"/><path d="M' + l[0] + "," + l[1] + ' v50" stroke="#3a2a20" stroke-width="3"/>' +
+          '<path d="M' + (l[0] - 40) + "," + (l[1] + 108) + " Q" + (l[0] - 40) + "," + (l[1] + 56) + " " + l[0] + "," + (l[1] + 56) + " Q" + (l[0] + 40) + "," + (l[1] + 56) + " " + (l[0] + 40) + "," + (l[1] + 108) + ' Z" fill="#8f5a42"/>' +
+          '<ellipse cx="' + l[0] + '" cy="' + (l[1] + 108) + '" rx="40" ry="7" fill="#ffe7b5"/>';
+      }).join("") +
+      snowShopWindowSVG() +
+      snowWallExtras() +
+      // the floor, a rug, and the things on it
+      '<rect x="0" y="780" width="1600" height="220" fill="#8d6238"/><path d="M0,780 H1600" stroke="#6b4524" stroke-width="6"/>' +
+      (function () { var b = ""; for (var n = -16; n <= 16; n++) b += "M" + (800 + n * 62) + ",780 L" + (800 + n * 130) + ",1000 "; return '<path d="' + b + '" stroke="#744c28" stroke-width="2"/>'; })() +
+      '<ellipse cx="900" cy="935" rx="430" ry="42" fill="#9c6a52" opacity=".85"/><ellipse cx="900" cy="935" rx="380" ry="32" fill="none" stroke="#ffd9a0" stroke-width="4" stroke-dasharray="14 12" opacity=".7"/>' +
+      snowFloorExtras();
+  }
+
+  // The customer: puffy red jacket, earmuffs, and a new snowboard held up beside them
+  function snowCustomerSVG() {
+    return keeperSVG(4, {
+      body:
+        '<path d="M18,280 C18,208 56,186 110,186 C164,186 202,208 202,280 Z" fill="#d6453d"/>' +
+        '<path d="M26,226 H194 M22,252 H198" stroke="#00000022" stroke-width="4"/>' +
+        '<path d="M110,188 V280" stroke="#9c2d27" stroke-width="3"/><rect x="104" y="214" width="12" height="14" rx="3" fill="#ffd36b"/>' +
+        // the new board, tipped up against the shoulder
+        '<g transform="translate(40,112) rotate(-4) scale(2.2,2.3)">' + snowDesign("dusk") + "</g>" +
+        '<circle cx="56" cy="228" r="13" fill="#2a2a34"/><circle cx="56" cy="228" r="10" fill="#f5d3b8"/>',
+      collar: '<path d="M84,188 Q110,214 136,188" fill="none" stroke="#9c2d27" stroke-width="12" stroke-linecap="round"/>'
+    });
+  }
+
+  // The shopkeeper: an orange fleece vest over a cream top, with a snowflake badge and a waxing cloth over the shoulder
+  function snowKeeperSVG(i) {
+    return keeperSVG(i, {
+      body:
+        '<path d="M22,280 C22,206 58,184 110,184 C162,184 198,206 198,280 Z" fill="#fff1e0"/>' +
+        '<path d="M60,200 L88,186 L110,232 L132,186 L160,200 L164,280 H56 Z" fill="#ef8a2b"/>' +
+        '<path d="M110,232 V280" stroke="#c0661a" stroke-width="3"/>' +
+        '<path d="M128,262 h18 M137,253 v18 M131,256 l12,12 M143,256 l-12,12" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/>' +
+        '<path d="M44,210 C54,196 76,192 92,196" stroke="#7be3ff" stroke-width="12" fill="none" stroke-linecap="round"/>',
+      collar: '<path d="M84,186 L110,232 L136,186" fill="none" stroke="#c0661a" stroke-width="10" stroke-linejoin="round" stroke-linecap="round"/>'
+    });
+  }
+
+  function snowInteriorHTML(a, i) {
+    var p = PALETTE[i % PALETTE.length], done = a.status === "done";
+    var say = done ? "Welcome in! Try a board, and read the whole story on the sign." : "Welcome! This one is still an idea. Here's the plan.";
+    return '<div class="int-wall snow-room" style="--wall:' + p.wall + ";--neon:" + p.neon + ";--awn:" + p.awn + '">' +
+      '<svg class="int-decor" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" aria-hidden="true">' + snowRoomSVG() + "</svg>" +
+      '<button type="button" class="int-back" id="intBack"><span aria-hidden="true">&larr;</span> Back to the village</button>' +
+      cardBoardHTML(a) +
+      '<div class="keeper snow-duo"><p class="keeper-say">' + say + "</p>" + snowKeeperSVG(i) + snowCustomerSVG() + "</div>" +
+    "</div>";
+  }
+
   function coachInteriorHTML(a, i) {
     var p = PALETTE[i % PALETTE.length], done = a.status === "done";
     var say = done ? "Welcome to the coaches' room! Everything about this one is on the board." : "Welcome! This one is still an idea. Here's the plan.";
@@ -4405,7 +4796,7 @@
     var s = SHOPS[i];
     if (!s || shopState.busy || shopState.open === i) return;
     var box = $("interior");
-    box.innerHTML = s.fit ? fitInteriorHTML(s) : s.a.art === "coach" ? coachInteriorHTML(s.a, s.ai) : interiorHTML(s.a, s.ai);
+    box.innerHTML = s.fit ? fitInteriorHTML(s) : s.a.art === "coach" ? coachInteriorHTML(s.a, s.ai) : s.a.art === "language" ? snowInteriorHTML(s.a, s.ai) : interiorHTML(s.a, s.ai);
     if (s.fit) safely("board tabs", function () { wireTabs(box, tab || "about"); });
     $("intBack").addEventListener("click", function () { leaveShop(true); });
     shopState.open = i;

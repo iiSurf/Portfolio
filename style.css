@@ -693,6 +693,28 @@ a.board-link:hover, a.board-link:focus-visible { color: var(--neon); outline: no
   .coach-room .keeper { right: 3vw; bottom: -8px; width: auto; height: 62svh; }
 }
 
+/* ---------- Inside Artifact 4's shop: the snowboard shop (snowInteriorHTML in script.js) ----------
+   Pine walls, a window onto the mountains, boards on the wall, and the shopkeeper with a customer holding a new board.
+   Both stand in front, cut off at the waist by the bottom of the screen. */
+.snow-room { background: #d3a56d; }
+.snow-room .int-back { box-shadow: 0 6px 18px rgba(0, 0, 0, .22), 0 0 0 3px #8a5a30; }
+.snow-room .keeper { right: 3vw; bottom: -8px; width: min(600px, 46vw); display: flex; align-items: flex-end; gap: 0; }
+.snow-room .keeper .keeper-svg { width: 50%; height: auto; flex: none; }
+.snow-room .keeper .keeper-svg { overflow: visible; }   /* the customer's board is taller than the picture of them */
+.snow-fall circle { animation: snowfall 7s linear infinite; }
+@keyframes snowfall { from { transform: translate(0, -60px); } to { transform: translate(34px, 760px); } }
+/* the bubble sits to the left of the shopkeeper, over the open floor, so it never covers the window or the letter board */
+.snow-room .keeper > .keeper-say { position: absolute; right: 100%; left: auto; bottom: 34%; margin-right: 12px; width: 200px; border-radius: 16px 4px 16px 16px; }
+.snow-room .keeper > .keeper-say::after { top: 20px; left: 100%; border: 9px solid transparent; border-left-color: #fbe9d0; border-right-width: 0; }
+@media (max-width: 900px), (max-aspect-ratio: 1/1) {
+  .snow-room .keeper { right: 50%; transform: translateX(50%); bottom: -8px; width: auto; height: 28vh; height: 28svh; }
+  .snow-room .keeper .keeper-svg { width: auto; height: 100%; }
+}
+@media (min-aspect-ratio: 1/1) and (max-height: 520px) {
+  .snow-room .keeper { right: 3vw; transform: none; bottom: -8px; width: auto; height: 60svh; }
+  .snow-room .keeper .keeper-svg { width: auto; height: 100%; }
+}
+
 /* ---------- Inside the skate fitting shop ----------
    Like a real skate shop: a pale slatwall runs from the floor almost to the ceiling, right of the snowy window.
    The letter board hangs on it from two hooks; beside it a wall of figure skate boots sits at eye level (framed
