@@ -603,3 +603,16 @@ What I asked the AI for, what changed, and what I decided. Newest entries go at 
 - The live app first, in a fresh browser at 390 wide: a new visitor sees the welcome, Speak without the model opens the download window with its explanation, Read, Listen, the word page, and Your colors open with no window and no errors, and the tips file loads.
 - The card opened straight from `#artifact-4` at 390 by 844 and 1280 by 800: "★ Open", the new text, and nothing scrolling sideways.
 - Not checked yet: the card live (after the push), a real phone, Safari, or Firefox.
+
+---
+
+## 2026-11-09 · Went back to the version before the speed-up
+
+### What I asked for
+
+- The mountains looked worse on my phone after the speed-up from earlier today, so go back to the version before it.
+
+### What changed
+
+- The speed-up (commit `12cfa15`) is undone by a new commit (`43048fb`), so the site is exactly as it was at `8966d34`: the stylesheet and scripts are back at `?v=20261108c`. Nothing was deleted from the history, so the speed-up can be looked at or brought back later.
+- The lake is as heavy on a phone as it was before. If I try again, I should test on my real phone first and change one thing at a time.
