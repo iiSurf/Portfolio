@@ -56,14 +56,14 @@ a { color: inherit; }
   pointer-events: none;
   background: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="240" height="40" viewBox="0 0 240 40"%3E%3Cpath d="M-63 40V21C-59.8 11.6667 -26.2 11.6667 -23 21C-19.32 11.6667 19.32 11.6667 23 21C27.64 7.66667 76.36 7.66667 81 21C84.2 13 117.8 13 121 21C125.48 9 172.52 9 177 21C180.2 11.6667 213.8 11.6667 217 21C220.68 11.6667 259.32 11.6667 263 21V40Z" fill="%232a1650" opacity=".25" transform="translate(0 -2)"/%3E%3Cpath d="M-63 40V21C-59.8 11.6667 -26.2 11.6667 -23 21C-19.32 11.6667 19.32 11.6667 23 21C27.64 7.66667 76.36 7.66667 81 21C84.2 13 117.8 13 121 21C125.48 9 172.52 9 177 21C180.2 11.6667 213.8 11.6667 217 21C220.68 11.6667 259.32 11.6667 263 21V40Z" fill="%23cdbdf2"/%3E%3Cpath d="M-44 40V31C-40.48 16.3333 -3.52 16.3333 0 31C4.16 15 47.84 15 52 31C55.04 19 86.96 19 90 31C94.96 12.3333 147.04 12.3333 152 31C155.52 17.6667 192.48 17.6667 196 31C199.52 16.3333 236.48 16.3333 240 31C244.16 15 287.84 15 292 31V40Z" fill="%230a0b2a" opacity=".4" transform="translate(0 -2.5)"/%3E%3Cpath d="M-44 40V31C-40.48 16.3333 -3.52 16.3333 0 31C4.16 15 47.84 15 52 31C55.04 19 86.96 19 90 31C94.96 12.3333 147.04 12.3333 152 31C155.52 17.6667 192.48 17.6667 196 31C199.52 16.3333 236.48 16.3333 240 31C244.16 15 287.84 15 292 31V40Z" fill="%23151a4a"/%3E%3C/svg%3E') repeat-x left bottom / auto 100%;
 }
-.hero-back, .hero-refl, .marks, .hero-skaters, .hero-front, .hero-near {
+.hero-back, .marks, .hero-skaters, .hero-front, .hero-near {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   display: block;
 }
-.hero-refl, .marks, .hero-skaters, .hero-front, .hero-front *, .hero-near { pointer-events: none; }
+.marks, .hero-skaters, .hero-front, .hero-front *, .hero-near { pointer-events: none; }
 /* the near layer (the parrot on the near lamp post) is painted over the front layer, but comes right after the
    back layer in the page, so Tab reaches the parrot before the skaters */
 .hero-near { z-index: 1; }
@@ -114,11 +114,6 @@ a { color: inherit; }
 html.lite .h4-flick, html.lite .h4-tw, html.lite .h4-fairyB { animation-play-state: paused; }
 html.hero-off .h4-flick, html.hero-off .h4-tw, html.hero-off .h4-sway, html.hero-off .h4-flame,
 html.hero-off .h4-smoke circle, html.hero-off .h4-fairyB { animation-play-state: paused; }
-/* script.js takes these over (stepDecor) as soon as it has started, so they all change together, about 10 times a second,
-   instead of each on its own frame. The CSS above only runs if the script could not take them over. */
-html.decor-js .h4-flick, html.decor-js .h4-tw, html.decor-js .h4-sway, html.decor-js .h4-flame,
-html.decor-js .h4-smoke circle, html.decor-js .h4-fairyB,
-html.decor-js .star, html.decor-js .bulb, html.decor-js .smoke circle { animation: none; }
 
 /* Twinkling stars over the village */
 .star { animation: twinkle 4s steps(10) infinite; }
@@ -355,9 +350,8 @@ html.village-off .star, html.village-off .bulb, html.village-off .smoke circle {
   gap: 10px;
   min-width: 0;
 }
-/* No will-change here on purpose: on its own layer the blurred shadow is recomputed by the graphics chip every time the snow
-   above it updates (measured: about 3 times the graphics time); in the page's own tiles it is drawn once and kept. */
-.shop > svg { width: 100%; height: auto; display: block; overflow: visible; filter: drop-shadow(0 18px 24px rgba(10, 10, 40, .45)); }
+/* will-change: the shop gets its own layer, so its blurred shadow is not redrawn on every flicker of its string lights */
+.shop > svg { width: 100%; height: auto; display: block; overflow: visible; filter: drop-shadow(0 18px 24px rgba(10, 10, 40, .45)); will-change: transform; }
 .shop .win-glow { transition: opacity .4s ease; opacity: .55; }
 /* the shop's picture and label lift, not the button itself, so the label stays above the snow while it moves */
 .shop > svg, .shop > .shop-label { transition: transform .4s cubic-bezier(.2, .7, .2, 1); }

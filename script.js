@@ -1967,7 +1967,7 @@
   };
   // The open ice below the far shore and the side banks; skate marks are clipped to it.
   var ICE_SURFACE = "M-200,790 L0,704 L90,666 L180,636 L270,612 L360,596 L440,592 L1170,592 L1250,596 L1340,614 L1430,638 L1520,670 L1600,708 L1800,800 L1800,1200 L-200,1200 Z";
-  var HERO_SVGS = ["heroBack", "heroRefl", "heroNear", "heroSkaters", "heroFront"];
+  var HERO_SVGS = ["heroBack", "heroNear", "heroSkaters", "heroFront"];
   // Same test as the CSS that swaps the wide and tall titles, so the crop and the title always agree.
   var tallQuery = window.matchMedia ? window.matchMedia("(max-aspect-ratio: 3/4)") : null;
   var layout = SCENE.wide, layoutName = "";
@@ -2590,8 +2590,8 @@
     }
   }
   function stepResort(now) {
-    // called on the shared tick (see frame()): 10 steps a second, 5 in lite mode, never a still picture
-    var ms = resort.last ? now - resort.last : 100;
+    var ms = now - resort.last;
+    if (ms < (perf.lite ? 190 : 96)) return;   // lite mode: 5 slower steps a second (each one repaints the slopes), never a still picture
     resort.last = now;
     var dt = Math.min(ms, 260) / 1000, set = resort.sets[layoutName === "tall" ? "T" : "W"];
     resort.t += dt;
@@ -2601,7 +2601,7 @@
   /* ---------- Main loop ---------- */
 
   // The lake only animates while it is on screen; the falling snow keeps going over the village.
-  var heroVisible = true, lastFrame = 0, snowDt = 0, snowLast = 0, tickLast = 0;
+  var heroVisible = true, lastFrame = 0, snowDt = 0, snowLast = 0;
   // Lite mode for slow devices, keyed on real frame time (requestAnimationFrame intervals, so canvas and paint
   // work count, not only the skaters' own code): on when the median frame over ~1.5 s is slower than 25 fps,
   // off again only above ~45 fps (so it does not flip back and forth). It keeps the look: the skaters' faint
@@ -2648,93 +2648,15 @@
       if (rink) { rink.step(now); trackBlades(now); if (skaterKeyFocused) placeSkaterKeys(); }
       perf.odd = !perf.odd;
       if (!perf.lite || perf.odd) drawMarks(now);
-      // The big back drawing is repainted whenever anything in it changes, so everything that lives in it (lantern glows,
-      // twinkles, flames, smoke, the animals, the ski resort) moves together on one tick: 10 times a second, 5 in lite mode
-      var tick = now - tickLast >= (perf.lite ? 190 : 95);
-      if (tick) { tickLast = now; stepDecor(now); }
-      stepAnimals(now, tick);
-      if (tick) stepResort(now);
+      stepAnimals(now);
+      stepResort(now);
       applyParallax();
     }
-    if (villageOn) stepVillageDecor(now);
     // an open shop covers the whole screen; the snow falls slowly, so it is drawn about 30 times a second
     if (!inShop) {
       snowDt += dt;
       if (!snowLast || now - snowLast >= 28) { tickSnow(now, snowDt); snowDt = 0; snowLast = now; }
     }
-  }
-
-  /* ---------- Decoration: lantern glows, twinkles, campfire flames, chimney smoke and the swinging snowflakes ---------- */
-
-  // These are CSS animations in style.css until the script is running. Each one changed the big drawing on a different
-  // frame, so the browser repainted all of it 60 times a second even when nothing seemed to move. From the first tick on,
-  // this takes them over and moves them all together (one step 10 times a second, so one repaint), with the same timing
-  // and the same look: each keeps its own duration and start offset from the CSS.
-  var decor = [], decorV = [], decorT0 = 0, decorOn = false, decorVLast = 0;
-  function collectDecor(into, scope, list) {
-    list.forEach(function (d) {
-      Array.prototype.forEach.call(document.querySelectorAll(scope.replace(/,|$/g, " " + d[0] + "$&")), function (e) {
-        var cs = window.getComputedStyle(e);
-        into.push({ e: e, k: d[1], dur: parseFloat(cs.animationDuration) || 3, delay: parseFloat(cs.animationDelay) || 0, last: "" });
-      });
-    });
-  }
-  function buildDecor() {
-    // the lake's: twinkles and lantern glows, flames and smoke, snowflakes
-    collectDecor(decor, "#heroBack,#heroFront", [[".h4-tw", "tw"], [".h4-fairyB", "tw"], [".h4-flick", "flick"], [".h4-sway", "sway"], [".h4-flame", "flame"], [".h4-smoke circle", "smoke"]]);
-    // the village's: the stars, the shops' string lights and chimney smoke
-    collectDecor(decorV, ".village", [[".star", "star"], [".bulb", "bulb"], [".smoke circle", "vsmoke"]]);
-  }
-  // the lantern glows' flicker: opacity .95, .74, 1, .82 at 0, 40, 70 and 100 % of a sweep, easing between
-  var FLICK = [[0, 0.95], [0.4, 0.74], [0.7, 1], [1, 0.82]];
-  function flickAt(u) {
-    for (var i = 1; i < FLICK.length; i++) {
-      if (u <= FLICK[i][0]) { var a = FLICK[i - 1], b = FLICK[i]; return a[1] + (b[1] - a[1]) * ease((u - a[0]) / (b[0] - a[0])); }
-    }
-    return FLICK[FLICK.length - 1][1];
-  }
-  function r2(v) { return Math.round(v * 100) / 100; }
-  // set one decoration to how it looks t seconds in (only touching the page when the look really changes)
-  function applyDecor(d, t) {
-    var x = (t - d.delay) / d.dur, u, k, v, o = null;
-    if (x < 0) x = 0;
-    if (d.k === "star" || d.k === "bulb" || d.k === "vsmoke") {
-      u = x - Math.floor(x);                          // these run round and round (the lake's run forwards and then back)
-      k = u < 0.5 ? ease(u * 2) : ease(2 - u * 2);
-      if (d.k === "star") v = String(r2(0.9 - 0.7 * k));
-      else if (d.k === "bulb") v = String(r2(1 - 0.55 * k));
-      else {                                          // chimney smoke: rises, grows and fades (it waits out its own start delay)
-        v = "translate(" + f(10 * u) + "px," + f(14 - 50 * u) + "px) scale(" + r2(0.6 + 1.1 * u) + ")";
-        o = String(r2(u < 0.2 ? 0.5 * u / 0.2 : 0.5 * (1 - u) / 0.8));
-      }
-    } else {
-      x -= 2 * Math.floor(x / 2);                     // forwards then backwards ("alternate"), over and over
-      u = x < 1 ? x : 2 - x; k = ease(u);
-      if (d.k === "tw") v = String(r2(1 - 0.7 * k));
-      else if (d.k === "flick") v = String(r2(flickAt(u)));
-      else if (d.k === "sway") v = "rotate(" + f(-4 + 8 * k) + "deg)";
-      else if (d.k === "flame") v = "scale(" + r2(1 - 0.1 * k) + "," + r2(1 + 0.12 * k) + ")";
-      else v = "translate(" + f(6 * k) + "px," + f(-8 * k) + "px) scale(" + r2(1 + 0.15 * k) + ")";
-    }
-    var key = o === null ? v : v + "|" + o;
-    if (key === d.last) return;
-    d.last = key;
-    if (d.k === "tw" || d.k === "flick" || d.k === "star" || d.k === "bulb") d.e.style.opacity = v; else d.e.style.transform = v;
-    if (o !== null) d.e.style.opacity = o;
-  }
-  function stepDecor(now) {
-    if (reduceMotion) return;
-    if (!decorT0) { decorT0 = now; buildDecor(); }
-    if (!decorOn && (decor.length || decorV.length)) { decorOn = true; document.documentElement.classList.add("decor-js"); }
-    var t = (now - decorT0) / 1000;
-    for (var i = 0; i < decor.length; i++) applyDecor(decor[i], t);
-  }
-  // the village's, only while it is on screen and no shop is open: 5 steps a second
-  function stepVillageDecor(now) {
-    if (!decorOn || now - decorVLast < 190) return;
-    decorVLast = now;
-    var t = (now - decorT0) / 1000;
-    for (var i = 0; i < decorV.length; i++) applyDecor(decorV[i], t);
   }
 
   /* ---------- The animals: drawn true to scale for where they stand, with small, calm movements ---------- */
@@ -2873,18 +2795,15 @@
     rot("parrotTail", bob ? -8 * bob : 0, 2, -5);
   }
 
-  // They are small and far away, so about 10 steps a second look just as smooth and cost far fewer repaints of the
+  // They are small and far away, so about 30 steps a second look just as smooth and cost fewer repaints of the
   // big back layer; only the flying eagle (it moves the furthest) keeps every frame.
   var animalsLast = 0;
-  function stepAnimals(now, tick) {
+  function stepAnimals(now) {
     var ms = now - animalsLast;
     if (eagleFlight) stepEagle(now);
-    // resting animals move on the shared tick with everything else in the big drawing; dogs that walk or wag (their legs and
-    // tails need more steps) and the flying eagle (every frame) get more
-    var busy = dogs.target !== dogs.x || now < dogs.wagUntil;
-    if (!tick && !(busy && ms >= 45)) return;
+    if (ms >= 0 && ms < 25) return;
     animalsLast = now;
-    stepDogs(now, Math.min(ms / 1000, 0.25));
+    stepDogs(now, Math.min(ms / 1000, 0.07));
     if (!eagleFlight) stepEagle(now);
     stepParrot(now);
   }
