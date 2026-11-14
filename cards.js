@@ -184,13 +184,16 @@ window.ARTIFACTS = [
   {
     number: 5,
     status: "idea",
-    title: "Skating hub and rink schedules",
-    link: "",
-    linkLabel: "",
+    title: "Skate Lodge",
+    link: "https://github.com/iiSurf/Skate-Lodge",
+    linkLabel: "See the plan on GitHub",
     reflection:
-      "A figure skating headquarters with a calendar, so skaters can see which rinks have public skate sessions open, " +
-      "find coaches to contact, and find shops. Another option is a new website for one skating rink, " +
-      "because most rink scheduling sites are really hard to use and I think they could be so much better.",
+      "In progress, and so far a plan, not an app. Skate Lodge is my moonshot: a platform for figure skaters, their coaches and their clubs, grown out of MySkate. " +
+      "It has four parts: accounts and clubs with a coach view; Jump Lab, where you film a jump and get air time, height and rotations from the video; " +
+      "a game played off the ice (collectibles earned from sessions, a passport of stamps from the rinks you visit, and a pond of your own to decorate); " +
+      "and the AI coach from Artifact 3. " +
+      "This week I planned it with Claude Code and wrote every decision down in ROADMAP.md, keeping what I decided apart from what Claude only suggested, " +
+      "and I started the log. Next I will test Jump Lab on real clips of my own jumps.",
     art: "calendar",
   },
 ];

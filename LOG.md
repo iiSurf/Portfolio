@@ -616,3 +616,16 @@ What I asked the AI for, what changed, and what I decided. Newest entries go at 
 
 - The speed-up (commit `12cfa15`) is undone by a new commit (`43048fb`), so the site is exactly as it was at `8966d34`: the stylesheet and scripts are back at `?v=20261108c`. Nothing was deleted from the history, so the speed-up can be looked at or brought back later.
 - The lake is as heavy on a phone as it was before. If I try again, I should test on my real phone first and change one thing at a time.
+
+---
+
+## 2026-11-14 · Artifact 5 card: Skate Lodge, in progress
+
+### What I asked for
+
+- Artifact 5 should point at my moonshot, Skate Lodge, for the weekly checkpoint.
+
+### What changed
+
+- The Artifact 5 card in `cards.js` now has the title Skate Lodge, a link to the plan at github.com/iiSurf/Skate-Lodge, and a few sentences on what it is and where it stands. It replaces my earlier idea (a skating hub with rink schedules). Its status stays "idea" because it is a plan so far, not a finished artifact.
+- The stylesheet and scripts are at `?v=20261114a` so browsers pick up the new card.
