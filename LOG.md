@@ -629,3 +629,18 @@ What I asked the AI for, what changed, and what I decided. Newest entries go at 
 
 - The Artifact 5 card in `cards.js` now has the title Skate Lodge, a link to the plan at github.com/iiSurf/Skate-Lodge, and a few sentences on what it is and where it stands. It replaces my earlier idea (a skating hub with rink schedules). Its status stays "idea" because it is a plan so far, not a finished artifact.
 - The stylesheet and scripts are at `?v=20261114a` so browsers pick up the new card.
+
+---
+
+## 2026-11-14 · Artifact 5's sign says Skate Lodge
+
+### What I asked for
+
+- The sign on the Artifact 5 shop should say Skate Lodge.
+
+### What changed
+
+- A shop that is still an idea used to show "ARTIFACT 5" on its sign, and only a finished artifact showed its name. Now a card can carry a `shopName`, and that goes on the sign even while the artifact is unfinished (`script.js`, where the sign is drawn; `cards.js` explains the field).
+- Artifact 5 has `shopName: "Skate Lodge"`. Its status is still "idea", so its window and its inside are unchanged.
+- The stylesheet and scripts are at `?v=20261114b`.
+- Checked: the page loads and the five signs read Skate Fitting, MySkate, MySkate Coach, Articulate, Skate Lodge.

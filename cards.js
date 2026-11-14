@@ -102,6 +102,9 @@ window.ABOUT = {
     number      Artifact number (1 to 5). Don't change these.
     status      "done" for a finished artifact, "idea" for a placeholder.
     title       The card's heading.
+    shopName    Optional. The words on the shop's sign. A finished artifact shows
+                its title there anyway; an idea shows "ARTIFACT 5" unless you
+                give it a shopName.
     link        Where the artifact lives (a URL). Leave "" if there isn't one yet.
     linkLabel   The words on the link button.
     reflection  A few sentences on how it went and what you learned.
@@ -185,6 +188,7 @@ window.ARTIFACTS = [
     number: 5,
     status: "idea",
     title: "Skate Lodge",
+    shopName: "Skate Lodge",
     link: "https://github.com/iiSurf/Skate-Lodge",
     linkLabel: "See the plan on GitHub",
     reflection:
